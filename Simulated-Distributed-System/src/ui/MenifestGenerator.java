@@ -19,7 +19,7 @@ public class MenifestGenerator {
 		final File libDir = new File("lib");
 		File[] files = libDir.listFiles();
 		for (File file : files) {
-			bw.write(file.getPath() + " ");
+			bw.write(file.getPath().replaceAll("\\\\", "/") + " ");
 		}
 		bw.write("\n");
 		bw.write("Main-Class: ");
