@@ -1,4 +1,4 @@
-package storage;
+package server.storage;
 
 import java.rmi.Remote;
 

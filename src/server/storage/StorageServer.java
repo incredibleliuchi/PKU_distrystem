@@ -1,4 +1,4 @@
-package storage;
+package server.storage;
 
 import java.net.MalformedURLException;
 import java.rmi.Naming;
@@ -6,9 +6,9 @@ import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 
-import naming.Machine;
-import naming.NamingService;
-import naming.NamingServiceImpl;
+import server.naming.Machine;
+import server.naming.NamingService;
+import server.naming.NamingServiceImpl;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

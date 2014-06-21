@@ -1,9 +1,9 @@
-package storage;
+package server.storage;
 
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 
-import naming.NamingServiceImpl;
+import server.naming.NamingServiceImpl;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

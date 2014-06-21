@@ -1,11 +1,11 @@
-package naming;
+package server.naming;
 
 import java.io.Serializable;
 
 import util.Variables;
 
 public class Machine implements Serializable {
-	private static final long serialVersionUID = 1221122585288570126L;
+	private static final long serialVersionUID = 1;
 	final public String ip;
 	final public int port;
 	
