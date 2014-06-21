@@ -9,8 +9,8 @@ import java.rmi.registry.LocateRegistry;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import server.Machine;
 import server.Server;
-import server.naming.Machine;
 import server.naming.NamingService;
 import server.naming.NamingServiceImpl;
 
@@ -33,7 +33,7 @@ public class StorageServer implements Server {
 	@Override
 	public void loadService() {
 		try {
-			StorageService service = new StorageServiceImpl();
+			final StorageService service = new StorageServiceImpl();
 			LocateRegistry.createRegistry(me.port);
 			Naming.rebind(me.getAddress(StorageService.class.getName()), service);
 		} catch (Exception e) {

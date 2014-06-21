@@ -8,10 +8,11 @@ import java.util.Set;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import server.Machine;
 import server.Server;
 
 public class NamingServer implements Server {
-	private static final Logger logger = LogManager.getLogger(NamingServiceImpl.class);
+	private static final Logger logger = LogManager.getLogger(NamingServer.class);
 	private static NamingServer INSTANCE = null;
 	public static NamingServer getInstance() {
 		if ( INSTANCE == null ) INSTANCE = new NamingServer();
@@ -22,12 +23,12 @@ public class NamingServer implements Server {
 	}
 	
 	public final Set<Machine> storages = new HashSet<>();
-	public static Machine me;
+	public final Machine me;
 	
 	@Override
 	public void loadService() {
 		try {
-			NamingServiceImpl service = new NamingServiceImpl();
+			final NamingServiceImpl service = new NamingServiceImpl();
 			LocateRegistry.createRegistry(me.port);
 			Naming.rebind(me.getAddress(NamingService.class.getName()), service);
 		} catch (Exception e) {
