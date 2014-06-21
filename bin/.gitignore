@@ -1,6 +1,6 @@
-/main
-/client
-/nameserver
-/namingserver
-/rpc
-/storageserver
+*.class
+*.log
+*.jar
+*.MF
+bin/
+logs/
