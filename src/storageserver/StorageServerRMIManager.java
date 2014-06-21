@@ -1,8 +1,8 @@
-package namingserver;
+package storageserver;
 
 import rpc.NamingServerServiceImpl;
 
-public class NamingServerRMIManager {
+public class StorageServerRMIManager {
 	
 	private NamingServerServiceImpl rmiServiceImpl;
 
