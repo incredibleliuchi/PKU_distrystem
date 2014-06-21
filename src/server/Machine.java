@@ -1,4 +1,4 @@
-package server.naming;
+package server;
 
 import java.io.Serializable;
 

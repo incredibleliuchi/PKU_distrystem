@@ -8,6 +8,7 @@ import java.util.Set;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import server.Machine;
 import server.Server;
 
 public class NamingServer implements Server {
