@@ -3,3 +3,5 @@
 *.jar
 *.MF
 bin/
+logs/
+lib/

@@ -2,10 +2,17 @@ package naming;
 
 import java.io.Serializable;
 
+import util.Variables;
+
 public class Machine implements Serializable {
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1221122585288570126L;
 	final public String ip;
 	final public int port;
+	
+	public Machine(String name) {
+		ip = Variables.getInstance().getProperty(name + "Ip");
+		port = Integer.parseInt(Variables.getInstance().getProperty(name + "Port"));
+	}
 	
 	public Machine(String ip, int port) {
 		this.ip = ip;
@@ -22,5 +29,14 @@ public class Machine implements Serializable {
 		return obj instanceof Machine &&
 				ip.equals(((Machine) obj).ip) && 
 				port == ((Machine) obj).port; 
+	}
+	
+	public String getAddress(String serviceName) {
+		return "rmi://" + toString() + "/" + serviceName;
+	}
+	
+	@Override
+	public String toString() {
+		return ip + ":" + port;
 	}
 }

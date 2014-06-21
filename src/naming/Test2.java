@@ -5,13 +5,26 @@ import java.rmi.Naming;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 
-import storage.dynamic.LoadService;
+import util.Variables;
 
 
 
 public class Test2 {
+	public final static Machine namingServer;
+	public final static Machine me;
+	
+	static {
+		final String namingServerIp = Variables.getInstance().getProperty("namingServerIp");
+		final int namingServerPort = Integer.parseInt(Variables.getInstance().getProperty("namingServerPort"));
+		namingServer = new Machine(namingServerIp, namingServerPort);
+		final String myIp = Variables.getInstance().getProperty("myIp");
+		final int myPort = Integer.parseInt(Variables.getInstance().getProperty("myPort"));
+		me = new Machine(myIp, myPort);
+	}
+	
+	
 	public static void main(String[] args) throws MalformedURLException, RemoteException, NotBoundException {
-		LoadService loadService = (LoadService) Naming.lookup("rmi://127.0.0.1:7779/LoadService");
-		loadService.call();
+		NamingService loadService = (NamingService) Naming.lookup(namingServer.getAddress(NamingService.class.getName()));
+		loadService.addMachine(me);
 	}
 }

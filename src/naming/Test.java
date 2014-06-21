@@ -10,16 +10,24 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import storage.dynamic.LoadServiceImpl;
+import util.Variables;
 
 
 public class Test {
 	Set<Machine> storages = new HashSet<>();
+
+	public final static Machine me;
+	
+	static {
+		final String myIp = Variables.getInstance().getProperty("namingServerIp");
+		final int myPort = Integer.parseInt(Variables.getInstance().getProperty("namingServerPort"));
+		me = new Machine(myIp, myPort);
+	}
 	
 	public static void main(String[] args) throws RemoteException, MalformedURLException {
-		LoadServiceImpl loadService = new LoadServiceImpl();
-		LocateRegistry.createRegistry(7779);
-		Naming.rebind("rmi://127.0.0.1:7779/LoadService", loadService);
+		NamingServiceImpl loadService = new NamingServiceImpl();
+		LocateRegistry.createRegistry(me.port);
+		Naming.rebind(me.getAddress(NamingService.class.getName()), loadService);
 		System.out.println("shit");
 	}
 }
