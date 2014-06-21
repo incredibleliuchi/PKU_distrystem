@@ -6,14 +6,13 @@ import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 
-import server.naming.Machine;
-import server.naming.NamingService;
-import server.naming.NamingServiceImpl;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import server.Server;
+import server.naming.Machine;
+import server.naming.NamingService;
+import server.naming.NamingServiceImpl;
 
 
 public class StorageServer implements Server {
@@ -46,7 +45,9 @@ public class StorageServer implements Server {
 	public static void main(String[] args) throws MalformedURLException, RemoteException, NotBoundException {
 		StorageServer server = StorageServer.getInstance();
 		NamingService loadService = (NamingService) Naming.lookup(server.namingServer.getAddress(NamingService.class.getName()));
-		loadService.addMachine(server.me);
+		for (int i = 0; i < 10; i ++) {
+			loadService.addMachine(server.me);
+		}
 		server.loadService();
 	}
 }
