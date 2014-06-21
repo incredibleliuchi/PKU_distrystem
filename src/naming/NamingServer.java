@@ -1,8 +1,6 @@
 package naming;
 
-import java.net.MalformedURLException;
 import java.rmi.Naming;
-import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.util.HashSet;
 import java.util.Set;
@@ -21,7 +19,6 @@ public class NamingServer implements Server {
 	}
 	private NamingServer() {
 		me = new Machine("namingServer");
-		loadService();
 	}
 	
 	public final Set<Machine> storages = new HashSet<>();
@@ -33,10 +30,9 @@ public class NamingServer implements Server {
 			NamingServiceImpl service = new NamingServiceImpl();
 			LocateRegistry.createRegistry(me.port);
 			Naming.rebind(me.getAddress(NamingService.class.getName()), service);
-		} catch (RemoteException e) {
+		} catch (Exception e) {
 			logger.error(e);
-		} catch (MalformedURLException e) {
-			logger.error(e);
+			e.printStackTrace();
 		}
 	}
 	

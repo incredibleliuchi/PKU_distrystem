@@ -16,5 +16,6 @@ public class NamingServiceImpl extends UnicastRemoteObject implements NamingServ
 	@Override
 	public void addMachine(Machine machine) throws RemoteException {
 		logger.entry(machine);
+		NamingServer.getInstance().storages.add(machine);
 	}	
 }

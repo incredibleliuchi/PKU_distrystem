@@ -26,7 +26,6 @@ public class StorageServer implements Server {
 	private StorageServer() {
 		namingServer = new Machine("namingServer");
 		me = new Machine("my");
-		loadService();
 	}
 	
 	public final Machine namingServer;
@@ -40,13 +39,14 @@ public class StorageServer implements Server {
 			Naming.rebind(me.getAddress(StorageService.class.getName()), service);
 		} catch (Exception e) {
 			logger.error(e);
+			e.printStackTrace();
 		}
 	}
 	
 	public static void main(String[] args) throws MalformedURLException, RemoteException, NotBoundException {
 		StorageServer server = StorageServer.getInstance();
-		server.loadService();
 		NamingService loadService = (NamingService) Naming.lookup(server.namingServer.getAddress(NamingService.class.getName()));
 		loadService.addMachine(server.me);
+		server.loadService();
 	}
 }
