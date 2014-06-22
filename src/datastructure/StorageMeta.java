@@ -7,5 +7,16 @@ import java.util.List;
  * Store meta-data of one storage server for naming server.
  */
 public class StorageMeta {
-	final public List<String> md5s = new ArrayList<String>();
+
+	private ArrayList<FileUnit> storedFileUnits;
+	
+	public StorageMeta() {
+		storedFileUnits = new ArrayList<>();
+	}
+	
+	public void addFileUnits(FileUnit fileUnit) {
+		storedFileUnits.add(fileUnit);
+	}
+	
+	
 }
