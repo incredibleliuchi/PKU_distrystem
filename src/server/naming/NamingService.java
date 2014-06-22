@@ -6,7 +6,5 @@ import java.rmi.RemoteException;
 import server.Machine;
 
 public interface NamingService extends Remote {
-	public void addMachine(Machine machine) throws RemoteException;
-	
-	
+	public void updateMachine(Machine machine) throws RemoteException;
 }
