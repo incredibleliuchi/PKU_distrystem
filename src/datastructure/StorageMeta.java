@@ -1,4 +1,4 @@
-package server.storage;
+package datastructure;
 
 import java.util.ArrayList;
 import java.util.List;

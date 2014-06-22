@@ -6,7 +6,7 @@ import java.rmi.Naming;
 
 import javax.swing.Timer;
 
-import server.naming.NamingService;
+import rmi.NamingService;
 import server.storage.StorageServer;
 import util.Variables;
 

@@ -13,10 +13,12 @@ import javax.swing.Timer;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import rmi.NamingService;
+import rmi.NamingServiceImpl;
+import rmi.StorageService;
+import rmi.StorageServiceImpl;
 import server.Machine;
 import server.Server;
-import server.naming.NamingService;
-import server.naming.NamingServiceImpl;
 import util.Variables;
 
 

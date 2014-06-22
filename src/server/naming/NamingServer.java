@@ -15,9 +15,11 @@ import javax.swing.Timer;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import datastructure.StorageMeta;
+import rmi.NamingService;
+import rmi.NamingServiceImpl;
 import server.Machine;
 import server.Server;
-import server.storage.StorageMeta;
 import util.Variables;
 
 public class NamingServer implements Server {

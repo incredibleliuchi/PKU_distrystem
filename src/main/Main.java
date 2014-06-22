@@ -6,8 +6,8 @@ import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 
-import server.naming.NamingService;
-import server.naming.NamingServiceImpl;
+import rmi.NamingService;
+import rmi.NamingServiceImpl;
 
 public class Main {
 

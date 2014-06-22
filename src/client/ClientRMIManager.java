@@ -1,8 +1,9 @@
 package client;
 
 import java.rmi.Naming;
+
+import rmi.NamingService;
 import server.Machine;
-import server.naming.NamingService;
 
 
 public class ClientRMIManager {

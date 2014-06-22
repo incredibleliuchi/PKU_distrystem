@@ -1,4 +1,4 @@
-package server.naming;
+package rmi;
 
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
@@ -8,8 +8,9 @@ import java.util.Map;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import datastructure.StorageMeta;
 import server.Machine;
-import server.storage.StorageMeta;
+import server.naming.NamingServer;
 
 public class NamingServiceImpl extends UnicastRemoteObject implements NamingService {
 	private static final long serialVersionUID = 1L;
