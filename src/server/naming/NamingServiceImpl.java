@@ -2,11 +2,14 @@ package server.naming;
 
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
+import java.util.Date;
+import java.util.Map;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import server.Machine;
+import server.storage.StorageMeta;
 
 public class NamingServiceImpl extends UnicastRemoteObject implements NamingService {
 	private static final long serialVersionUID = 1L;
@@ -16,8 +19,18 @@ public class NamingServiceImpl extends UnicastRemoteObject implements NamingServ
 	}
 
 	@Override
-	public void addMachine(Machine machine) throws RemoteException {
+	public void updateMachine(Machine machine) throws RemoteException {
 		logger.entry(machine);
-		NamingServer.getInstance().storages.add(machine);
+		final Map<Machine, Long> storageValids = NamingServer.getInstance().storageValids;
+		final long now = new Date().getTime();
+		if ( storageValids.containsKey(machine) ) {
+			final long date = storageValids.get(machine);
+			if ( date < now ) storageValids.put(machine, now);
+		} else {
+			// TODO: add a new storage server, immigrate data. 
+			storageValids.put(machine, now);
+			final Map<Machine, StorageMeta> storageMetas = NamingServer.getInstance().storageMetas; 
+			storageMetas.put(machine, new StorageMeta());
+		}
 	}	
 }

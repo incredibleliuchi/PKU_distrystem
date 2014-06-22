@@ -5,7 +5,8 @@ import java.io.Serializable;
 import util.Variables;
 
 public class Machine implements Serializable {
-	private static final long serialVersionUID = 1;
+	private static final long serialVersionUID = 1L;
+	
 	final public String ip;
 	final public int port;
 	
