@@ -2,10 +2,7 @@ package server.storage;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.net.MalformedURLException;
 import java.rmi.Naming;
-import java.rmi.NotBoundException;
-import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 
 import javax.swing.Timer;
@@ -49,7 +46,7 @@ public class StorageServer implements Server {
 		}
 	}
 	
-	public static void main(String[] args) throws MalformedURLException, RemoteException, NotBoundException {
+	public static void main(String[] args) {
 		StorageServer.getInstance().loadService();
 		
 		final int interval = Integer.parseInt(Variables.getInstance().getProperty("contactInterval")); 
