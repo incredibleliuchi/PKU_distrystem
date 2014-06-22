@@ -19,7 +19,7 @@ public class Main {
 
 		
 		NamingService loadService1 = (NamingService) Naming.lookup("rmi://127.0.0.1:7779/LoadService");
-		loadService1.addMachine(null);
+		loadService1.updateMachine(null);
 		
 	}
 

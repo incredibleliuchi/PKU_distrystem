@@ -1,10 +1,14 @@
 package server.storage;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.net.MalformedURLException;
 import java.rmi.Naming;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
+
+import javax.swing.Timer;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -13,6 +17,7 @@ import server.Machine;
 import server.Server;
 import server.naming.NamingService;
 import server.naming.NamingServiceImpl;
+import util.Variables;
 
 
 public class StorageServer implements Server {
@@ -43,11 +48,23 @@ public class StorageServer implements Server {
 	}
 	
 	public static void main(String[] args) throws MalformedURLException, RemoteException, NotBoundException {
-		StorageServer server = StorageServer.getInstance();
-		NamingService loadService = (NamingService) Naming.lookup(server.namingServer.getAddress(NamingService.class.getName()));
-		for (int i = 0; i < 10; i ++) {
-			loadService.addMachine(server.me);
-		}
-		server.loadService();
+		StorageServer.getInstance().loadService();
+		
+		final int interval = Integer.parseInt(Variables.getInstance().getProperty("contactInterval")); 
+		final Timer timer = new Timer(interval, new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent ae) {
+				try {
+					StorageServer server = StorageServer.getInstance();
+					NamingService loadService = (NamingService) Naming.lookup(server.namingServer.getAddress(NamingService.class.getName()));
+					loadService.updateMachine(server.me);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		});
+		timer.start();
+
 	}
 }
