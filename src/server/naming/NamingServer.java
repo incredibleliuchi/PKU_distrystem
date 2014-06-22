@@ -15,6 +15,7 @@ import javax.swing.Timer;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import datastructure.FileUnit;
 import datastructure.StorageMeta;
 import rmi.NamingService;
 import rmi.NamingServiceImpl;
@@ -31,11 +32,23 @@ public class NamingServer implements Server {
 	}
 	private NamingServer() {
 		me = new Machine("namingServer");
+		
+		root = new FileUnit("root", true);
 	}
 	
 	public final Map<Machine, Long> storageValids = new HashMap<>();
 	public final Map<Machine, StorageMeta> storageMetas = new HashMap<>();
 	public final Machine me;
+	
+	/**
+	 * record the virtual user-view document tree structure
+	 * the root directory
+	 */
+	private FileUnit root;
+	
+	public FileUnit getRoot() {
+		return root;
+	}
 	
 	@Override
 	public void loadService() {

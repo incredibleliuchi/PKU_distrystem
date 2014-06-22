@@ -1,5 +1,7 @@
 package client;
 
+import server.Machine;
+
 
 public class Client {
 	
@@ -9,39 +11,78 @@ public class Client {
 		rmiManager = new ClientRMIManager();
 	}
 	
-	public boolean createFile(String fileName, String dirPath) {
+	public boolean createFile(String fullFilePath) {
+		
+		Machine targetMachine = rmiManager.getCreateFileLocation(fullFilePath);
+		if (targetMachine == null) {
+			return false;
+		}
+		
+		//TODO
+		
 		return false;
 	}
 	
-	public byte[] getFile(String fileName, String dirPath) {
+	public byte[] getFile(String fullFilePath) {
+		Machine targetMachine = rmiManager.getCreateFileLocation(fullFilePath);
+		if (targetMachine == null) {
+			return null;
+		}
+		
+		//TODO
 		return null;
 	}
 	
-	public boolean deleteFile(String fileName, String dirPath) {
+	public boolean deleteFile(String fullFilePath) {
+		Machine targetMachine = rmiManager.getCreateFileLocation(fullFilePath);
+		if (targetMachine == null) {
+			return false;
+		}
+		
+		//TODO
+		
 		return false;
 	}
 	
-	public boolean isExistFile(String fileName, String dirPath) {
-		return false;
+	public boolean isExistFile(String fullFilePath) {
+		Machine targetMachine = rmiManager.getCreateFileLocation(fullFilePath);
+		if (targetMachine == null) {
+			return false;
+		} else {
+			return true;
+		}
 	}
 	
-	public long getSizeOfFile(String fileName, String dirPath) {
-		return 0;
+	public long getSizeOfFile(String fullFilePath) {
+		Machine targetMachine = rmiManager.getCreateFileLocation(fullFilePath);
+		if (targetMachine == null) {
+			return -1;
+		}
+		//TODO
+		return -1;
 	}
 
-	public boolean appendWriteFile(String fileName, String dirPath, byte[] data) {
+	public boolean appendWriteFile(String fullFilePath, byte[] data) {
+		Machine targetMachine = rmiManager.getCreateFileLocation(fullFilePath);
+		if (targetMachine == null) {
+			return false;
+		}
+		//TODO
 		return false;
 	}
 	
-	public boolean createDir(String dirName, String dirFatherPath) {
+	public boolean createDir(String fullFilePath) {
+		//TODO
 		return false;
 	}
 	
-	public boolean deleteDir(String dirName, String dirFatherPath) {
+	public boolean deleteDir(String fullFilePath) {
+		//TODO
 		return false;
 	}
 	
-	public boolean listDir(String dirName, String dirFatherPath) {
+	public boolean listDir(String fullFilePath) {
+		//TODO
 		return false;
 	}
 	
