@@ -16,7 +16,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import datastructure.FileUnit;
-import datastructure.StorageMeta;
 import rmi.NamingService;
 import rmi.NamingServiceImpl;
 import server.Machine;
@@ -37,7 +36,6 @@ public class NamingServer implements Server {
 	}
 	
 	public final Map<Machine, Long> storageValids = new HashMap<>();
-	public final Map<Machine, StorageMeta> storageMetas = new HashMap<>();
 	public final Machine me;
 	
 	/**
@@ -80,7 +78,6 @@ public class NamingServer implements Server {
 			logger.info(String.format("removing %s (last contact: %s)", machine, new Date(storageValids.get(machine))));
 			// TODO: immigrate data.
 			storageValids.remove(machine);
-			storageMetas.remove(machine);
 		}
 	}
 	

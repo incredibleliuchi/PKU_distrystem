@@ -10,7 +10,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import datastructure.FileUnit;
-import datastructure.StorageMeta;
 import server.Machine;
 import server.naming.NamingServer;
 
@@ -30,10 +29,7 @@ public class NamingServiceImpl extends UnicastRemoteObject implements NamingServ
 			final long date = storageValids.get(machine);
 			if ( date < now ) storageValids.put(machine, now);
 		} else {
-			// TODO: add a new storage server, immigrate data. 
 			storageValids.put(machine, now);
-			final Map<Machine, StorageMeta> storageMetas = NamingServer.getInstance().storageMetas; 
-			storageMetas.put(machine, new StorageMeta());
 		}
 	}
 
@@ -42,7 +38,30 @@ public class NamingServiceImpl extends UnicastRemoteObject implements NamingServ
 		NamingServer namingServer = NamingServer.getInstance();
 		int storeIndex = fullFilePath.hashCode() % namingServer.storageValids.size();
 		Machine machine = new ArrayList<>(namingServer.storageValids.keySet()).get(storeIndex);
-		return machine;
+		
+		String[] path = fullFilePath.split("/");
+		FileUnit nowFileUnit = namingServer.getRoot();
+		for (int i = 0; i < path.length; i++) {
+			
+			if (i != path.length-1) {
+				ArrayList<FileUnit> fileUnits = nowFileUnit.list();
+				boolean isCreatedDir = false;
+				for (int j = 0; j < fileUnits.size(); j++) {
+					if (fileUnits.get(j).isDir() && fileUnits.get(j).getName().equals(path[i])) {
+						nowFileUnit = fileUnits.get(j);
+						isCreatedDir = true;
+						break;
+					}
+				}
+				if (!isCreatedDir) {
+					return null;
+				}
+			} else {
+				return machine;
+			}
+			
+		}
+		return null;
 	}
 
 	@Override
@@ -76,11 +95,34 @@ public class NamingServiceImpl extends UnicastRemoteObject implements NamingServ
 		NamingServer namingServer = NamingServer.getInstance();
 		int storeIndex = fullDirPath.hashCode() % namingServer.storageValids.size();
 		Machine machine = new ArrayList<>(namingServer.storageValids.keySet()).get(storeIndex);
-		return machine;
+		
+		String[] path = fullDirPath.split("/");
+		FileUnit nowFileUnit = namingServer.getRoot();
+		for (int i = 0; i < path.length; i++) {
+			
+			if (i != path.length-1) {
+				ArrayList<FileUnit> fileUnits = nowFileUnit.list();
+				boolean isCreatedDir = false;
+				for (int j = 0; j < fileUnits.size(); j++) {
+					if (fileUnits.get(j).isDir() && fileUnits.get(j).getName().equals(path[i])) {
+						nowFileUnit = fileUnits.get(j);
+						isCreatedDir = true;
+						break;
+					}
+				}
+				if (!isCreatedDir) {
+					return null;
+				}
+			} else {
+				return machine;
+			}
+			
+		}
+		return null;
 	}
 
 	@Override
-	public Machine deleteDir(String fullDirPath) throws RemoteException {
+	public Machine getDirLocation(String fullDirPath) throws RemoteException {
 		NamingServer namingServer = NamingServer.getInstance();
 		String[] path = fullDirPath.split("/");
 		FileUnit nowFileUnit = namingServer.getRoot();
@@ -129,7 +171,49 @@ public class NamingServiceImpl extends UnicastRemoteObject implements NamingServ
 				}
 			}
 		}
-		return null;
+		return nowFileUnit.list();
 	}
+
+	private void addToDir(Machine machine, FileUnit srcDir, FileUnit targetDir) {
+		ArrayList<FileUnit> srcLowerFileUnits = srcDir.list();
+		for (FileUnit toAddFileUnit : srcLowerFileUnits) {
+			ArrayList<FileUnit> targetLowerFileUnits = targetDir.list();
+			boolean isExist = false;
+			FileUnit targetAddedFileUnit = null;
+			for (FileUnit existFileUnit : targetLowerFileUnits) {
+				if (existFileUnit.getName().equals(toAddFileUnit.getName())) {
+					isExist = true;
+					ArrayList<Machine> machines = existFileUnit.getAllMachines();
+					boolean isRecordThisMachine = false;
+					for (Machine recordMachine : machines) {
+						if (recordMachine.ip.equals(machine.ip) && recordMachine.port == machine.port) {
+							isRecordThisMachine = true;
+						}
+					}
+					if (!isRecordThisMachine) {
+						targetAddedFileUnit = existFileUnit;
+						existFileUnit.addStorageMachine(machine);
+					}
+				}
+			}
+			if (!isExist) {
+				targetAddedFileUnit = new FileUnit(toAddFileUnit.getName(), toAddFileUnit.isDir());
+				targetAddedFileUnit.addStorageMachine(machine);
+				targetDir.addLowerFileUnit(targetAddedFileUnit);
+			}
+			if (targetAddedFileUnit.isDir()) {
+				addToDir(machine, toAddFileUnit, targetAddedFileUnit);
+			}
+		}
+	}
+	
+	@Override
+	public boolean informOnline(Machine machine, FileUnit localRoot)
+			throws RemoteException {
+		FileUnit root = NamingServer.getInstance().getRoot();
+		addToDir(machine, localRoot, root);
+		return true;
+	}
+
 		
 }

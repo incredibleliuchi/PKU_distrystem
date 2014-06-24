@@ -1,10 +1,13 @@
 package datastructure;
 
+import java.io.Serializable;
 import java.util.ArrayList;
+
 import server.Machine;
 
-public class FileUnit {
+public class FileUnit  implements Serializable {
 	
+	private static final long serialVersionUID = 8247624941002229076L;
 	private String name;
 	private boolean isDir;
 	private ArrayList<FileUnit> lowerFileUnits;
