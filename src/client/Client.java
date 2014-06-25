@@ -163,12 +163,13 @@ public class Client {
 	
 	public static void main(String[] args) {
 		Client client = new Client();
-		
-		//System.out.println(client.createFile("aaa/ddd.tt"));
-		//System.out.println(client.createFile("aaa/bbb/ddd.tt"));
-		//System.out.println(client.createFile("aaa/bbb/ccc/ddd.tt"));
-		//System.out.println(client.deleteFile("aaa/ddd.tt"));
-		//System.out.println(client.deleteDir("aaa/bbb"));
+
+		System.out.println(client.createDir("aaa"));
+		System.out.println(client.createFile("aaa/ddd.txt"));
+		System.out.println(client.createDir("aaa/bbb"));
+		System.out.println(client.createFile("aaa/bbb/ddd.txt"));
+		System.out.println(client.createFile("aaa/bbb/ccc/ddd.txt"));
+		System.out.println(client.deleteFile("aaa/ddd.tt"));
 		
 		byte[] data = {65,66,67,68,69,70};
 		System.out.println(client.appendWriteFile("liuchi.dd", data));

@@ -36,7 +36,7 @@ import util.Variables;
 public class StorageServer implements Server {
 	
 	private static final String FILE_STORE_PATH = "storage";
-	private static final String STORAGE_SERVER_NUMBER = "4";
+	private static final String STORAGE_SERVER_NUMBER = "3";
 	
 	private static final Logger logger = LogManager.getLogger(NamingServiceImpl.class);
 	private static StorageServer INSTANCE = null;
