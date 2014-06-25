@@ -23,7 +23,7 @@ class Args4J {
 }
 
 public class Main {
-	public static void main(String[] args) throws CmdLineException, IOException, InterruptedException, SQLException {
+	public static void main(String[] args) throws Exception {
 		Args4J args4j = new Args4J();
 		CmdLineParser parser = new CmdLineParser(args4j);
 		parser.parseArgument(args);

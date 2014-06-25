@@ -2,15 +2,15 @@ package server.storage;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-<<<<<<< HEAD
-=======
+
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.RandomAccessFile;
+
 import java.net.MalformedURLException;
->>>>>>> master
+
 import java.rmi.Naming;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
@@ -411,7 +411,7 @@ public class StorageServer implements Server {
 		return false;
 	}
 	
-	public static void main(String[] args) throws MalformedURLException, RemoteException, NotBoundException {
+	public static void main(String[] args) throws Exception {
 
 		StorageServer.getInstance().loadService();
 		
@@ -430,7 +430,6 @@ public class StorageServer implements Server {
 			}
 		});
 		timer.start();
-
 		
 	}
 }
