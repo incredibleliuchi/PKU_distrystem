@@ -20,33 +20,33 @@ public class StorageServiceImpl extends UnicastRemoteObject implements StorageSe
 	
 	
 	@Override
-	public boolean createFile(String fullFilePath) throws RemoteException {
-		return StorageServer.getInstance().createFile(fullFilePath);
+	public boolean createFile(String fullFilePath, boolean isOrigin) throws RemoteException {
+		return StorageServer.getInstance().createFile(fullFilePath, isOrigin);
 	}
 	@Override
 	public byte[] getFile(String fullFilePath) throws RemoteException {
 		return StorageServer.getInstance().getFile(fullFilePath);
 	}
 	@Override
-	public boolean deleteFile(String fullFilePath) throws RemoteException {
-		return StorageServer.getInstance().deleteFile(fullFilePath);
+	public boolean deleteFile(String fullFilePath, boolean isOrigin) throws RemoteException {
+		return StorageServer.getInstance().deleteFile(fullFilePath, isOrigin);
 	}
 	@Override
 	public long getSizeOfFile(String fullFilePath) throws RemoteException {
 		return StorageServer.getInstance().getSizeOfFile(fullFilePath);
 	}
 	@Override
-	public boolean appendWriteFile(String fullFilePath, byte[] data)
+	public boolean appendWriteFile(String fullFilePath, byte[] data, boolean isOrigin)
 			throws RemoteException {
-		return StorageServer.getInstance().appendWriteFile(fullFilePath, data);
+		return StorageServer.getInstance().appendWriteFile(fullFilePath, data, isOrigin);
 	}
 	@Override
-	public boolean createDir(String fullDirPath) throws RemoteException {
-		return StorageServer.getInstance().createDir(fullDirPath);
+	public boolean createDir(String fullDirPath, boolean isOrigin) throws RemoteException {
+		return StorageServer.getInstance().createDir(fullDirPath, isOrigin);
 	}
 	@Override
-	public boolean deleteDir(String fullDirPath) throws RemoteException {
-		return StorageServer.getInstance().deleteDir(fullDirPath);
+	public boolean deleteDir(String fullDirPath, boolean isOrigin) throws RemoteException {
+		return StorageServer.getInstance().deleteDir(fullDirPath, isOrigin);
 	}
 	
 }

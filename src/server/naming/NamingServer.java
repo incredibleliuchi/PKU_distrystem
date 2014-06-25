@@ -4,6 +4,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.rmi.Naming;
 import java.rmi.registry.LocateRegistry;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -76,9 +77,24 @@ public class NamingServer implements Server {
 		}
 		for (Machine machine : toRemove) {
 			logger.info(String.format("removing %s (last contact: %s)", machine, new Date(storageValids.get(machine))));
-			// TODO: immigrate data.
+			refreshDirRecordWithMachineInvalid(machine, root);
 			storageValids.remove(machine);
 		}
+	}
+	
+	private void refreshDirRecordWithMachineInvalid(Machine invalidMachine, FileUnit nowDir) {
+		ArrayList<FileUnit> fileUnits = nowDir.list();
+		for (int j = 0; j < fileUnits.size(); j++) {
+			FileUnit fileUnit = fileUnits.get(j);
+			if (fileUnit.isDir()) {
+				refreshDirRecordWithMachineInvalid(invalidMachine, fileUnit);
+			}
+			fileUnit.deleteStorageMachine(invalidMachine);
+			if (fileUnit.getAllMachines().size() == 0) {
+				nowDir.deleteLowerFileUnit(fileUnit);
+			}
+		}
+
 	}
 	
 	

@@ -12,6 +12,7 @@ import java.rmi.Naming;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
+import java.util.ArrayList;
 
 import javax.swing.Timer;
 
@@ -19,6 +20,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import datastructure.FileUnit;
+import datastructure.SynchroMeta;
 import rmi.NamingService;
 import rmi.NamingServiceImpl;
 import rmi.StorageService;
@@ -31,7 +33,7 @@ import util.Variables;
 public class StorageServer implements Server {
 	
 	private static final String FILE_STORE_PATH = "storage";
-	private static final String STORAGE_SERVER_NUMBER = "1";
+	private static final String STORAGE_SERVER_NUMBER = "4";
 	
 	private static final Logger logger = LogManager.getLogger(NamingServiceImpl.class);
 	private static StorageServer INSTANCE = null;
@@ -41,7 +43,8 @@ public class StorageServer implements Server {
 	}
 	private StorageServer() {
 		namingServer = new Machine("namingServer");
-		me = new Machine("my");
+		//me = new Machine("my");
+		me = new Machine("storageServer"+STORAGE_SERVER_NUMBER);
 		
 		fileStoreRootDir = FILE_STORE_PATH + "/" + STORAGE_SERVER_NUMBER;
 		File storeDir = new File(FILE_STORE_PATH);
@@ -60,20 +63,72 @@ public class StorageServer implements Server {
 			e.printStackTrace();
 		}
 		FileUnit localRoot = generateDirTree(thisServerDir);
+		ArrayList<SynchroMeta> changeMetas = null;
 		try {
-			namingService.informOnline(me, localRoot);
+			changeMetas = namingService.informOnline(me, localRoot);
 		} catch (RemoteException e) {
 			e.printStackTrace();
+		}
+		if (changeMetas != null) {
+			for (SynchroMeta synchroMeta : changeMetas) {
+				String fullFilePath = fileStoreRootDir+synchroMeta.getPath();
+				if (synchroMeta.getOpType() == SynchroMeta.DELETE) {
+					File file = new File(fullFilePath);
+					if (file.isDirectory()) {
+						recursionDeleteDir(file);
+					} else {
+						file.delete();
+					}
+				}
+				if (synchroMeta.getOpType() == SynchroMeta.CONFIRM) {
+					connectToOtherStorageServer(synchroMeta.getTargetMachine());
+					System.out.println(fullFilePath);
+					File file = new File(fullFilePath);
+					file.delete();
+					byte[] data = null;
+					try {
+						data = otherStorageService.getFile(synchroMeta.getPath());
+					} catch (RemoteException e) {
+						e.printStackTrace();
+					}
+					RandomAccessFile randomFile = null;
+					try {
+						randomFile = new RandomAccessFile(file, "rw");
+			            randomFile.write(data);
+						
+					} catch (Exception e) {
+						e.printStackTrace();
+					} finally {
+						if (randomFile != null) {
+							try {
+								randomFile.close();
+							} catch (IOException e) {
+								e.printStackTrace();
+							}
+						}
+					}
+				}
+			}
 		}
 	}
 	
 	public final Machine namingServer;
 	public final Machine me;
-	//TODO inform naming server data change
 	private NamingService namingService;
+	private StorageService otherStorageService;
 	
 	private String fileStoreRootDir;
 
+	private boolean connectToOtherStorageServer(Machine machine) {
+		try {
+			otherStorageService = (StorageService) Naming.lookup(machine.getAddress(StorageService.class.getName()));
+			return true;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return false;
+	}
+	
 	@Override
 	public void loadService() {
 		try {
@@ -121,7 +176,7 @@ public class StorageServer implements Server {
 		return file;
 	}
 	
-	public boolean createFile(String fullFilePath) {
+	public boolean createFile(String fullFilePath, boolean isOrigin) {
 		File file = null;
 		String[] path = fullFilePath.split("/");
 		String nowDir = new String(fileStoreRootDir);
@@ -131,7 +186,20 @@ public class StorageServer implements Server {
 			if (i == path.length-1) {
 				if (!file.exists()) {
 					try {
-						return file.createNewFile();
+						boolean isCreateSuccess = file.createNewFile();
+						if (isCreateSuccess) {
+							ArrayList<Machine> otherMachines = namingService.notifyCreateFile(fullFilePath, isOrigin, me);
+							if (otherMachines != null) {
+								for (Machine otherMachine : otherMachines) {
+									if (otherMachine.ip.equals(me.ip) && otherMachine.port == me.port) {
+										continue;
+									}
+									connectToOtherStorageServer(otherMachine);
+									otherStorageService.createFile(fullFilePath, false);
+								}
+							}
+						}
+						return isCreateSuccess;
 					} catch (IOException e) {
 						e.printStackTrace();
 					}
@@ -175,13 +243,30 @@ public class StorageServer implements Server {
 		return buffer;
 	}
 	
-	public boolean deleteFile(String fullFilePath) {
+	public boolean deleteFile(String fullFilePath, boolean isOrigin) {
 		File file = locateFile(fullFilePath);
 		if (file == null) {
 			return false;
 		}
 		
-		return file.delete();
+		boolean isDeleteSuccess = file.delete();
+		if (isDeleteSuccess) {
+			try {
+				ArrayList<Machine> otherMachines = namingService.notifyDeleteFile(fullFilePath, isOrigin, me);
+				if (otherMachines != null) {
+					for (Machine otherMachine : otherMachines) {
+						if (otherMachine.ip.equals(me.ip) && otherMachine.port == me.port) {
+							continue;
+						}
+						connectToOtherStorageServer(otherMachine);
+						otherStorageService.deleteFile(fullFilePath, false);
+					}
+				}
+			} catch (RemoteException e) {
+				e.printStackTrace();
+			}
+		}
+		return isDeleteSuccess;
 	}
 	
 	public long getSizeOfFile(String fullFilePath) {
@@ -193,7 +278,7 @@ public class StorageServer implements Server {
 		return file.length();
 	}
 	
-	public boolean appendWriteFile(String fullFilePath, byte[] data) {
+	public boolean appendWriteFile(String fullFilePath, byte[] data, boolean isOrigin) {
 		File file = locateFile(fullFilePath);
 		if (file == null) {
 			return false;
@@ -218,10 +303,24 @@ public class StorageServer implements Server {
 			}
 		}
 		
-		return false;
+		try {
+			ArrayList<Machine> otherMachines = namingService.notifyAppendWriteFile(fullFilePath, isOrigin, me);
+			if (otherMachines != null) {
+				for (Machine otherMachine : otherMachines) {
+					if (otherMachine.ip.equals(me.ip) && otherMachine.port == me.port) {
+						continue;
+					}
+					connectToOtherStorageServer(otherMachine);
+					otherStorageService.appendWriteFile(fullFilePath, data, false);
+				}
+			}
+		} catch (RemoteException e) {
+			e.printStackTrace();
+		}
+		return true;
 	}
 	
-	public boolean createDir(String fullDirPath) {
+	public boolean createDir(String fullDirPath, boolean isOrigin) {
 		File file = null;
 		String[] path = fullDirPath.split("/");
 		String nowDir = new String(fileStoreRootDir);
@@ -230,7 +329,24 @@ public class StorageServer implements Server {
 			file = new File(nowDir);
 			if (i == path.length-1) {
 				if (!file.exists()) {
-					return file.mkdir();
+					boolean isMkdirSuccess = file.mkdir();
+					if (isMkdirSuccess) {
+						try {
+							ArrayList<Machine> otherMachines = namingService.notifyCreateDir(fullDirPath, isOrigin, me);
+							if (otherMachines != null) {
+								for (Machine otherMachine : otherMachines) {
+									if (otherMachine.ip.equals(me.ip) && otherMachine.port == me.port) {
+										continue;
+									}
+									connectToOtherStorageServer(otherMachine);
+									otherStorageService.createDir(fullDirPath, false);
+								}
+							}
+						} catch (RemoteException e) {
+							e.printStackTrace();
+						}
+					}
+					return isMkdirSuccess;
 				}
 			} else {
 				if (!file.exists()) {
@@ -255,7 +371,7 @@ public class StorageServer implements Server {
 		dir.delete();
 	}
 	
-	public boolean deleteDir(String fullDirPath) {
+	public boolean deleteDir(String fullDirPath, boolean isOrigin) {
 		File file = null;
 		String[] path = fullDirPath.split("/");
 		String nowDir = new String(fileStoreRootDir);
@@ -267,6 +383,20 @@ public class StorageServer implements Server {
 					return false;
 				} else {
 					recursionDeleteDir(file);
+					try {
+						ArrayList<Machine> otherMachines = namingService.notifyDeleteDir(fullDirPath, isOrigin, me);
+						if (otherMachines != null) {
+							for (Machine otherMachine : otherMachines) {
+								if (otherMachine.ip.equals(me.ip) && otherMachine.port == me.port) {
+									continue;
+								}
+								connectToOtherStorageServer(otherMachine);
+								otherStorageService.deleteDir(fullDirPath, false);
+							}
+						}
+					} catch (RemoteException e) {
+						e.printStackTrace();
+					}
 					return true;
 				}
 			} else {

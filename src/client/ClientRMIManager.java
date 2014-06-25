@@ -98,7 +98,7 @@ public class ClientRMIManager {
 	
 	public boolean storageServerCreateFile(String fullFilePath) {
 		try {
-			return storageService.createFile(fullFilePath);
+			return storageService.createFile(fullFilePath, true);
 		} catch (RemoteException e) {
 			e.printStackTrace();
 		}
@@ -116,7 +116,7 @@ public class ClientRMIManager {
 	
 	public boolean storageServerDeleteFile(String fullFilePath) {
 		try {
-			return storageService.deleteFile(fullFilePath);
+			return storageService.deleteFile(fullFilePath, true);
 		} catch (RemoteException e) {
 			e.printStackTrace();
 		}
@@ -134,7 +134,7 @@ public class ClientRMIManager {
 	
 	public boolean storageServerAppendWriteFile(String fullFilePath, byte[] data) {
 		try {
-			return storageService.appendWriteFile(fullFilePath, data);
+			return storageService.appendWriteFile(fullFilePath, data, true);
 		} catch (RemoteException e) {
 			e.printStackTrace();
 		}
@@ -143,7 +143,7 @@ public class ClientRMIManager {
 	
 	public boolean storageServerCreateDir(String fullDirPath) {
 		try {
-			return storageService.createDir(fullDirPath);
+			return storageService.createDir(fullDirPath, true);
 		} catch (RemoteException e) {
 			e.printStackTrace();
 		}
@@ -152,7 +152,7 @@ public class ClientRMIManager {
 	
 	public boolean storageServerDeleteDir(String fullDirPath) {
 		try {
-			return storageService.deleteDir(fullDirPath);
+			return storageService.deleteDir(fullDirPath, true);
 		} catch (RemoteException e) {
 			e.printStackTrace();
 		}

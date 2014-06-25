@@ -33,6 +33,11 @@ public class FileUnit  implements Serializable {
 	}
 	public boolean addLowerFileUnit(FileUnit fileUnit) {
 		if (isDir) {
+			for (int i = 0; i < lowerFileUnits.size(); i++) {
+				if (lowerFileUnits.get(i).name == fileUnit.name && lowerFileUnits.get(i).isDir == fileUnit.isDir) {
+					return false;
+				}
+			}
 			lowerFileUnits.add(fileUnit);
 			return true;
 		}
@@ -40,6 +45,11 @@ public class FileUnit  implements Serializable {
 	}
 	
 	public void addStorageMachine(Machine machine) {
+		for (int i=0; i<storageMachines.size(); ++i) {
+			if (storageMachines.get(i).port == machine.port && storageMachines.get(i).ip.equals(machine.ip)) {
+				return;
+			}
+		}
 		storageMachines.add(machine);
 	}
 	public int getStorageMachineNum() {
@@ -55,6 +65,15 @@ public class FileUnit  implements Serializable {
 	}
 	public ArrayList<Machine> getAllMachines() {
 		return storageMachines;
+	}
+	public void deleteLowerFileUnit(FileUnit target) {
+		for (int i = 0; i < lowerFileUnits.size(); i++) {
+			if (lowerFileUnits.get(i).name == target.name && lowerFileUnits.get(i).isDir == target.isDir) {
+				lowerFileUnits.remove(i);
+				break;
+			}
+		}
+		
 	}
 
 }
