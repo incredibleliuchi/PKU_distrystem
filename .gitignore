@@ -6,3 +6,4 @@ bin/
 logs/
 lib/
 .classpath
+/storage
