@@ -164,19 +164,23 @@ public class Client {
 	public static void main(String[] args) {
 		Client client = new Client();
 		
-		//System.out.println(client.createFile("aaa/ddd.tt"));
+		System.out.println(client.createDir("wer"));
+		System.out.println(client.createFile("wer/ddd.tt"));
+		//System.out.println(client.createDir("bbb"));
+		//System.out.println(client.createFile("bbb/ccc.tt"));
+		//System.out.println(client.createDir("bbb/eee"));
 		//System.out.println(client.createFile("aaa/bbb/ddd.tt"));
 		//System.out.println(client.createFile("aaa/bbb/ccc/ddd.tt"));
 		//System.out.println(client.deleteFile("aaa/ddd.tt"));
 		//System.out.println(client.deleteDir("aaa/bbb"));
 		
-		byte[] data = {65,66,67,68,69,70};
-		System.out.println(client.appendWriteFile("liuchi.dd", data));
-		System.out.println(client.appendWriteFile("liuchi.ddd", data));
+		//byte[] data = {65,66,67,68,69,70};
+		//System.out.println(client.appendWriteFile("liuchi.dd", data));
+		//System.out.println(client.appendWriteFile("liuchi.ddd", data));
 		
 		System.out.println("=======================");
 		
-		System.out.println(client.getSizeOfFile("liuchi.ddd"));
+		//System.out.println(client.getSizeOfFile("liuchi.ddd"));
 		
 		//System.out.println(client.isExistFile("aaa"));
 		//System.out.println(client.isExistFile("aaa/ddd.tt"));
@@ -187,9 +191,9 @@ public class Client {
 		for (FileUnit fileUnit : dir) {
 			System.out.println(fileUnit.getName() + " " + fileUnit.isDir());
 		}
-		data = client.getFile("liuchi.ddd");
-		for (int i = 0; i < data.length; i++) {
-			System.out.println(data[i]);
-		}
+		//data = client.getFile("liuchi.ddd");
+		//for (int i = 0; i < data.length; i++) {
+		//	System.out.println(data[i]);
+		//}
 	}
 }

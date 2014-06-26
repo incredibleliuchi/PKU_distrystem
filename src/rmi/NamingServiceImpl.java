@@ -36,6 +36,7 @@ public class NamingServiceImpl extends UnicastRemoteObject implements NamingServ
 
 	@Override
 	public Machine createFile(String fullFilePath) throws RemoteException {
+		logger.entry(fullFilePath);
 		NamingServer namingServer = NamingServer.getInstance();
 		int storeIndex = fullFilePath.hashCode() % namingServer.storageValids.size();
 		storeIndex = (storeIndex + namingServer.storageValids.size()) % namingServer.storageValids.size();
@@ -63,6 +64,7 @@ public class NamingServiceImpl extends UnicastRemoteObject implements NamingServ
 				boolean isCreatedFile = false;
 				for (int j = 0; j < fileUnits.size(); j++) {
 					if (!fileUnits.get(j).isDir() && fileUnits.get(j).getName().equals(path[i])) {
+						System.out.println(fileUnits.get(j).getName());
 						isCreatedFile = true;
 						break;
 					}
@@ -79,6 +81,7 @@ public class NamingServiceImpl extends UnicastRemoteObject implements NamingServ
 
 	@Override
 	public Machine getFileLocation(String fullFilePath) throws RemoteException {
+		logger.entry(fullFilePath);
 		NamingServer namingServer = NamingServer.getInstance();
 		String[] path = fullFilePath.split("/");
 		FileUnit nowFileUnit = namingServer.getRoot();
@@ -105,6 +108,7 @@ public class NamingServiceImpl extends UnicastRemoteObject implements NamingServ
 
 	@Override
 	public Machine createDir(String fullDirPath) throws RemoteException {
+		logger.entry(fullDirPath);
 		NamingServer namingServer = NamingServer.getInstance();
 		int storeIndex = fullDirPath.hashCode() % namingServer.storageValids.size();
 		storeIndex = (storeIndex + namingServer.storageValids.size()) % namingServer.storageValids.size();
@@ -148,6 +152,7 @@ public class NamingServiceImpl extends UnicastRemoteObject implements NamingServ
 
 	@Override
 	public Machine getDirLocation(String fullDirPath) throws RemoteException {
+		logger.entry(fullDirPath);
 		NamingServer namingServer = NamingServer.getInstance();
 		String[] path = fullDirPath.split("/");
 		FileUnit nowFileUnit = namingServer.getRoot();
@@ -175,6 +180,7 @@ public class NamingServiceImpl extends UnicastRemoteObject implements NamingServ
 	@Override
 	public ArrayList<FileUnit> listDir(String fullDirPath)
 			throws RemoteException {
+		logger.entry(fullDirPath);
 		NamingServer namingServer = NamingServer.getInstance();
 		String[] path = fullDirPath.split("/");
 		FileUnit nowFileUnit = namingServer.getRoot();
@@ -259,6 +265,7 @@ public class NamingServiceImpl extends UnicastRemoteObject implements NamingServ
 	@Override
 	public ArrayList<SynchroMeta> informOnline(Machine machine, FileUnit localRoot)
 			throws RemoteException {
+		logger.entry(machine, localRoot);
 		FileUnit root = NamingServer.getInstance().getRoot();
 		ArrayList<SynchroMeta> result = addToDir(machine, localRoot, root, "");
 		return result;
@@ -282,6 +289,7 @@ public class NamingServiceImpl extends UnicastRemoteObject implements NamingServ
 	@Override
 	public ArrayList<Machine> notifyCreateFile(String fullFilePath,
 			boolean isOrigin, Machine operateMachine) throws RemoteException {
+		logger.entry(fullFilePath, isOrigin, operateMachine);
 		FileUnit fatheFileUnit = NamingServer.getInstance().getRoot();
 		String[] path = fullFilePath.split("/");
 		for (int i = 0; i < path.length-1; i++) {
@@ -336,6 +344,8 @@ public class NamingServiceImpl extends UnicastRemoteObject implements NamingServ
 	@Override
 	public ArrayList<Machine> notifyDeleteFile(String fullFilePath,
 			boolean isOrigin, Machine operateMachine) throws RemoteException {
+		logger.entry(fullFilePath, isOrigin, operateMachine);
+		
 		FileUnit fatheFileUnit = findChangedFileUnitFather(fullFilePath);
 		String[] path = fullFilePath.split("/");
 		String name = path[path.length-1];
@@ -366,6 +376,7 @@ public class NamingServiceImpl extends UnicastRemoteObject implements NamingServ
 	@Override
 	public ArrayList<Machine> notifyAppendWriteFile(String fullFilePath,
 			boolean isOrigin, Machine operateMachine) throws RemoteException {
+		logger.entry(fullFilePath, isOrigin, operateMachine);
 		if (isOrigin) {
 			FileUnit fatheFileUnit = findChangedFileUnitFather(fullFilePath);
 			String[] path = fullFilePath.split("/");
@@ -398,6 +409,7 @@ public class NamingServiceImpl extends UnicastRemoteObject implements NamingServ
 	@Override
 	public ArrayList<Machine> notifyCreateDir(String fullDirPath,
 			boolean isOrigin, Machine operateMachine) throws RemoteException {
+		logger.entry(fullDirPath, isOrigin, operateMachine);
 		FileUnit fatheFileUnit = findChangedFileUnitFather(fullDirPath);
 		String[] path = fullDirPath.split("/");
 		String name = path[path.length-1];
@@ -411,7 +423,7 @@ public class NamingServiceImpl extends UnicastRemoteObject implements NamingServ
 			}
 		}
 		if (changedFileUnit == null) {
-			changedFileUnit = new FileUnit(name, false);
+			changedFileUnit = new FileUnit(name, true);
 			fatheFileUnit.addLowerFileUnit(changedFileUnit);
 		}
 		changedFileUnit.addStorageMachine(operateMachine);
@@ -441,6 +453,7 @@ public class NamingServiceImpl extends UnicastRemoteObject implements NamingServ
 	@Override
 	public ArrayList<Machine> notifyDeleteDir(String fullDirPath,
 			boolean isOrigin, Machine operateMachine) throws RemoteException {
+		logger.entry(fullDirPath, isOrigin, operateMachine);
 		FileUnit fatheFileUnit = findChangedFileUnitFather(fullDirPath);
 		String[] path = fullDirPath.split("/");
 		String name = path[path.length-1];
