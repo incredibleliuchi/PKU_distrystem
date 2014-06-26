@@ -411,7 +411,7 @@ public class NamingServiceImpl extends UnicastRemoteObject implements NamingServ
 			}
 		}
 		if (changedFileUnit == null) {
-			changedFileUnit = new FileUnit(name, false);
+			changedFileUnit = new FileUnit(name, true);
 			fatheFileUnit.addLowerFileUnit(changedFileUnit);
 		}
 		changedFileUnit.addStorageMachine(operateMachine);

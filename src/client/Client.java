@@ -1,5 +1,6 @@
 package client;
 
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 
 import com.sun.org.apache.bcel.internal.generic.AALOAD;
@@ -161,7 +162,7 @@ public class Client {
 		return result;
 	}
 	
-	public static void main(String[] args) {
+	public static void main(String[] args) throws UnsupportedEncodingException {
 		Client client = new Client();
 
 		System.out.println(client.createDir("aaa"));
@@ -170,14 +171,14 @@ public class Client {
 		System.out.println(client.createFile("aaa/bbb/ddd.txt"));
 		System.out.println(client.createFile("aaa/bbb/ccc/ddd.txt"));
 		System.out.println(client.deleteFile("aaa/ddd.tt"));
-		
-		byte[] data = {65,66,67,68,69,70};
-		System.out.println(client.appendWriteFile("liuchi.dd", data));
-		System.out.println(client.appendWriteFile("liuchi.ddd", data));
+		System.out.println(client.createFile("liuchi.txt"));
+		byte[] data = "This is a shit.".getBytes("utf8");
+		System.out.println(client.appendWriteFile("liuchi.txt", data));
+		System.out.println(client.appendWriteFile("liuchi.txt", data));
 		
 		System.out.println("=======================");
 		
-		System.out.println(client.getSizeOfFile("liuchi.ddd"));
+		System.out.println(client.getSizeOfFile("liuchi.txt"));
 		
 		//System.out.println(client.isExistFile("aaa"));
 		//System.out.println(client.isExistFile("aaa/ddd.tt"));

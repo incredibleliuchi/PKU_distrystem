@@ -87,6 +87,7 @@ public class NamingServer implements Server {
 	 * Then, check if there are at least 3 copies for each file, 
 	 * and put those files to toCopy set.
 	 */
+	@Deprecated
 	public void checkCopies() {
 		// TODO
 	}
@@ -132,6 +133,7 @@ public class NamingServer implements Server {
 	/**
 	 * Set a timer to check if there are at least 3 copies of each file
 	 */
+	@Deprecated
 	public Timer startCopyTimer() {
 		final int interval = Integer.parseInt(Variables.getInstance().getProperty("copyThreshold")); 
 		final Timer timer = new Timer(interval, new ActionListener() {
@@ -154,6 +156,6 @@ public class NamingServer implements Server {
 	public static void main(String[] args) {
 		NamingServer.getInstance().loadService();
 		NamingServer.getInstance().startValidTimer();
-		NamingServer.getInstance().startCopyTimer();
+//		NamingServer.getInstance().startCopyTimer();
 	}
 }
