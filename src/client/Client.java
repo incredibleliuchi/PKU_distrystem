@@ -164,16 +164,6 @@ public class Client {
 	public static void main(String[] args) {
 		Client client = new Client();
 		
-		System.out.println(client.createDir("wer"));
-		System.out.println(client.createFile("wer/ddd.tt"));
-		//System.out.println(client.createDir("bbb"));
-		//System.out.println(client.createFile("bbb/ccc.tt"));
-		//System.out.println(client.createDir("bbb/eee"));
-		//System.out.println(client.createFile("aaa/bbb/ddd.tt"));
-		//System.out.println(client.createFile("aaa/bbb/ccc/ddd.tt"));
-		//System.out.println(client.deleteFile("aaa/ddd.tt"));
-		//System.out.println(client.deleteDir("aaa/bbb"));
-		
 		//byte[] data = {65,66,67,68,69,70};
 		//System.out.println(client.appendWriteFile("liuchi.dd", data));
 		//System.out.println(client.appendWriteFile("liuchi.ddd", data));

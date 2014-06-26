@@ -82,6 +82,15 @@ public class NamingServer implements Server {
 		}
 	}
 	
+	/**
+	 * First, immigrate toCopy set.
+	 * Then, check if there are at least 3 copies for each file, 
+	 * and put those files to toCopy set.
+	 */
+	public void checkCopies() {
+		// TODO
+	}
+
 	private void refreshDirRecordWithMachineInvalid(Machine invalidMachine, FileUnit nowDir) {
 		ArrayList<FileUnit> fileUnits = nowDir.list();
 		for (int j = 0; j < fileUnits.size(); j++) {
@@ -97,11 +106,11 @@ public class NamingServer implements Server {
 
 	}
 	
-	
-	public static void main(String[] args) {
-		NamingServer.getInstance().loadService();
-		
-		// Check whether each storage server is available
+	/**
+	 * Set a timer to check whether each storage server is available
+	 * @return timer
+	 */
+	public Timer startValidTimer() {
 		final int interval = Integer.parseInt(Variables.getInstance().getProperty("contactInterval")); 
 		final Timer timer = new Timer(interval, new ActionListener() {
 			
@@ -110,10 +119,41 @@ public class NamingServer implements Server {
 				try {
 					NamingServer.getInstance().checkStorages();
 				} catch (Exception e) {
+					logger.error(e);
 					e.printStackTrace();
 				}
 			}
 		});
 		timer.start();
+		return timer;
+	}
+	
+
+	/**
+	 * Set a timer to check if there are at least 3 copies of each file
+	 */
+	public Timer startCopyTimer() {
+		final int interval = Integer.parseInt(Variables.getInstance().getProperty("copyThreshold")); 
+		final Timer timer = new Timer(interval, new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent ae) {
+				try {
+					NamingServer.getInstance().checkCopies();
+				} catch (Exception e) {
+					logger.error(e);
+					e.printStackTrace();
+				}
+			}
+		});
+		timer.start();
+		return timer;
+	}
+	
+	
+	public static void main(String[] args) {
+		NamingServer.getInstance().loadService();
+		NamingServer.getInstance().startValidTimer();
+		NamingServer.getInstance().startCopyTimer();
 	}
 }

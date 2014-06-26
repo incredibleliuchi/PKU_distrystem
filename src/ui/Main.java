@@ -5,21 +5,25 @@ import java.sql.SQLException;
 
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
+import org.kohsuke.args4j.Option;
+
+import server.naming.NamingServer;
+import server.storage.StorageServer;
 
 
 class Args4J {
-//	@Option(name = "-index", usage = "Index Data.")
-//	boolean doIndex;
-//	
-//	@Option(name = "-search", usage = "Do Default Search. ex. -search \"物语 花\"")
-//	String searchQuery = null;
-//	
-//	@Option(name = "-serve", usage = "Run The Searching Server.")
-//	boolean doServe;
+	@Option(name = "-naming", usage = "Start as naming server.")
+	boolean naming;
+	
+	@Option(name = "-storage", usage = "Start as storage server.")
+	boolean storage;
+	
+	@Option(name = "-client", usage = "Start as client.")
+	boolean client;
 }
 
 public class Main {
-	public static void main(String[] args) throws CmdLineException, IOException, InterruptedException, SQLException {
+	public static void main(String[] args) throws Exception {
 		Args4J args4j = new Args4J();
 		CmdLineParser parser = new CmdLineParser(args4j);
 		parser.parseArgument(args);
@@ -28,22 +32,14 @@ public class Main {
 			return;
 		}
 		
-//		if ( args4j.doIndex ) {
-//			Indexer.main(new String [0]);
-//			
-//		} else if ( args4j.searchQuery != null ) {
-//			IndexReader reader = DirectoryReader.open(FSDirectory.open(
-//					new File(Variables.getInstance().getProperties().getProperty("indexPath"))));
-//			IndexSearcher searcher = new IndexSearcher(reader);
-//			JSONObject result = Searcher.getInstance().search(searcher, 
-//					QueryParser.getInstance().parseAsField(args4j.searchQuery, "name"), 0, 100);
-//			System.out.println(result);
-//			reader.close();
-//			
-//		} else if ( args4j.doServe ) {
-//			new Thread(new TCPThreadServer()).run();
-//			while ( true ) Thread.sleep(Long.MAX_VALUE);
-//		}
+		if ( args4j.naming ) {
+			NamingServer.main(null);
+			
+		} else if ( args4j.storage ) {
+			StorageServer.main(null);
+			
+		} else if ( args4j.client ) {
+		}
 	}
 }
 
