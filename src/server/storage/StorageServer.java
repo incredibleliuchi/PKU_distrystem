@@ -2,17 +2,12 @@ package server.storage;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.RandomAccessFile;
-
-import java.net.MalformedURLException;
-
 import java.rmi.Naming;
-import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.util.ArrayList;
@@ -22,8 +17,6 @@ import javax.swing.Timer;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import datastructure.FileUnit;
-import datastructure.SynchroMeta;
 import rmi.NamingService;
 import rmi.NamingServiceImpl;
 import rmi.StorageService;
@@ -31,6 +24,8 @@ import rmi.StorageServiceImpl;
 import server.Machine;
 import server.Server;
 import util.Variables;
+import datastructure.FileUnit;
+import datastructure.SynchroMeta;
 
 
 public class StorageServer implements Server {
@@ -127,6 +122,7 @@ public class StorageServer implements Server {
 			otherStorageService = (StorageService) Naming.lookup(machine.getAddress(StorageService.class.getName()));
 			return true;
 		} catch (Exception e) {
+			logger.error(e);
 			e.printStackTrace();
 		}
 		return false;
@@ -204,6 +200,7 @@ public class StorageServer implements Server {
 						}
 						return isCreateSuccess;
 					} catch (IOException e) {
+						logger.error(e);
 						e.printStackTrace();
 					}
 				}
@@ -233,12 +230,14 @@ public class StorageServer implements Server {
 			inputStream.read(buffer);
 			
 		} catch (Exception e) {
+			logger.error(e);
 			e.printStackTrace();
 		} finally {
 			if (inputStream != null) {
 				try {
 					inputStream.close();
 				} catch (IOException e) {
+					logger.error(e);
 					e.printStackTrace();
 				}
 			}
@@ -266,6 +265,7 @@ public class StorageServer implements Server {
 					}
 				}
 			} catch (RemoteException e) {
+				logger.error(e);
 				e.printStackTrace();
 			}
 		}
@@ -277,7 +277,6 @@ public class StorageServer implements Server {
 		if (file == null) {
 			return -1;
 		}
-		
 		return file.length();
 	}
 	
@@ -295,12 +294,14 @@ public class StorageServer implements Server {
             randomFile.write(data);
 			
 		} catch (Exception e) {
+			logger.error(e);
 			e.printStackTrace();
 		} finally {
 			if (randomFile != null) {
 				try {
 					randomFile.close();
 				} catch (IOException e) {
+					logger.error(e);
 					e.printStackTrace();
 				}
 			}
@@ -318,6 +319,7 @@ public class StorageServer implements Server {
 				}
 			}
 		} catch (RemoteException e) {
+			logger.error(e);
 			e.printStackTrace();
 		}
 		return true;
@@ -346,6 +348,7 @@ public class StorageServer implements Server {
 								}
 							}
 						} catch (RemoteException e) {
+							logger.error(e);
 							e.printStackTrace();
 						}
 					}
@@ -398,6 +401,7 @@ public class StorageServer implements Server {
 							}
 						}
 					} catch (RemoteException e) {
+						logger.error(e);
 						e.printStackTrace();
 					}
 					return true;
@@ -425,6 +429,7 @@ public class StorageServer implements Server {
 					NamingService loadService = (NamingService) Naming.lookup(server.namingServer.getAddress(NamingService.class.getName()));
 					loadService.updateMachine(server.me);
 				} catch (Exception e) {
+					logger.error(e);
 					e.printStackTrace();
 				}
 			}

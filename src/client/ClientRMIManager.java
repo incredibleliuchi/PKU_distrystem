@@ -1,19 +1,16 @@
 package client;
 
-import java.net.MalformedURLException;
 import java.rmi.Naming;
-import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import datastructure.FileUnit;
 import rmi.NamingService;
-import rmi.NamingServiceImpl;
 import rmi.StorageService;
 import server.Machine;
+import datastructure.FileUnit;
 
 
 public class ClientRMIManager {
@@ -27,6 +24,7 @@ public class ClientRMIManager {
 		try {
 			namingService = (NamingService) Naming.lookup(namingServer.getAddress(NamingService.class.getName()));
 		} catch (Exception e) {
+			logger.error(e);
 			e.printStackTrace();
 		}
 	}
@@ -37,8 +35,8 @@ public class ClientRMIManager {
 		try {
 			machine = namingService.createFile(fullFilePath);
 		} catch (RemoteException e) {
+			logger.error(e);
 			e.printStackTrace();
-			logger.error("namingServer failure");
 		}
 		return machine;
 	}
@@ -49,8 +47,8 @@ public class ClientRMIManager {
 		try {
 			machine = namingService.getFileLocation(fullFilePath);
 		} catch (RemoteException e) {
+			logger.error(e);
 			e.printStackTrace();
-			logger.error("namingServer failure");
 		}
 		return machine;
 	}
@@ -61,8 +59,8 @@ public class ClientRMIManager {
 		try {
 			machine = namingService.createDir(fullDirPath);
 		} catch (RemoteException e) {
+			logger.error(e);
 			e.printStackTrace();
-			logger.error("namingServer failure");
 		}
 		return machine;
 	}
@@ -73,8 +71,8 @@ public class ClientRMIManager {
 		try {
 			machine = namingService.getDirLocation(fullDirPath);
 		} catch (RemoteException e) {
+			logger.error(e);
 			e.printStackTrace();
-			logger.error("namingServer failure");
 		}
 		return machine;
 	}
@@ -85,8 +83,8 @@ public class ClientRMIManager {
 		try {
 			fileUnits = namingService.listDir(fullDirPath);
 		} catch (RemoteException e) {
+			logger.error(e);
 			e.printStackTrace();
-			logger.error("namingServer failure");
 		}
 		return fileUnits;
 	}
@@ -97,6 +95,7 @@ public class ClientRMIManager {
 			storageService = (StorageService) Naming.lookup(machine.getAddress(StorageService.class.getName()));
 			return true;
 		} catch (Exception e) {
+			logger.error(e);
 			e.printStackTrace();
 		}
 		return false;
@@ -107,6 +106,7 @@ public class ClientRMIManager {
 		try {
 			return storageService.createFile(fullFilePath, true);
 		} catch (RemoteException e) {
+			logger.error(e);
 			e.printStackTrace();
 		}
 		return false;
@@ -117,6 +117,7 @@ public class ClientRMIManager {
 		try {
 			return storageService.getFile(fullFilePath);
 		} catch (RemoteException e) {
+			logger.error(e);
 			e.printStackTrace();
 		}
 		return null;
@@ -127,6 +128,7 @@ public class ClientRMIManager {
 		try {
 			return storageService.deleteFile(fullFilePath, true);
 		} catch (RemoteException e) {
+			logger.error(e);
 			e.printStackTrace();
 		}
 		return false;
@@ -137,6 +139,7 @@ public class ClientRMIManager {
 		try {
 			return storageService.getSizeOfFile(fullFilePath);
 		} catch (RemoteException e) {
+			logger.error(e);
 			e.printStackTrace();
 		}
 		return -1;
@@ -147,6 +150,7 @@ public class ClientRMIManager {
 		try {
 			return storageService.appendWriteFile(fullFilePath, data, true);
 		} catch (RemoteException e) {
+			logger.error(e);
 			e.printStackTrace();
 		}
 		return false;
@@ -157,6 +161,7 @@ public class ClientRMIManager {
 		try {
 			return storageService.createDir(fullDirPath, true);
 		} catch (RemoteException e) {
+			logger.error(e);
 			e.printStackTrace();
 		}
 		return false;
@@ -167,6 +172,7 @@ public class ClientRMIManager {
 		try {
 			return storageService.deleteDir(fullDirPath, true);
 		} catch (RemoteException e) {
+			logger.error(e);
 			e.printStackTrace();
 		}
 		return false;

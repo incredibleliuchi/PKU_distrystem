@@ -6,7 +6,6 @@ import java.rmi.server.UnicastRemoteObject;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import server.Machine;
 import server.storage.StorageServer;
 
 public class StorageServiceImpl extends UnicastRemoteObject implements StorageService {
@@ -15,9 +14,6 @@ public class StorageServiceImpl extends UnicastRemoteObject implements StorageSe
 	public StorageServiceImpl() throws RemoteException {
 		super();
 	}
-	
-	
-	
 	
 	@Override
 	public boolean createFile(String fullFilePath, boolean isOrigin) throws RemoteException {

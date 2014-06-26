@@ -3,10 +3,8 @@ package client;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 
-import com.sun.org.apache.bcel.internal.generic.AALOAD;
-
-import datastructure.FileUnit;
 import server.Machine;
+import datastructure.FileUnit;
 
 
 public class Client {
