@@ -38,8 +38,14 @@ public class StorageServiceImpl extends UnicastRemoteObject implements StorageSe
 	@Override
 	public boolean appendWriteFile(String fullFilePath, byte[] data, boolean isOrigin)
 			throws RemoteException {
-		logger.entry(fullFilePath, isOrigin);
+		logger.entry(fullFilePath, "len:" + data.length, isOrigin);
 		return StorageServer.getInstance().appendWriteFile(fullFilePath, data, isOrigin);
+	}
+	@Override
+	public boolean randomWriteFile(String fullFilePath, long pos, byte[] data, boolean isOrigin)
+			throws RemoteException {
+		logger.entry(fullFilePath, pos, "len:" + data.length, isOrigin);
+		return StorageServer.getInstance().randomWriteFile(fullFilePath, pos, data, isOrigin);
 	}
 	@Override
 	public boolean createDir(String fullDirPath, boolean isOrigin) throws RemoteException {

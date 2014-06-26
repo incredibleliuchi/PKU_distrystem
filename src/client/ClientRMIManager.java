@@ -2,7 +2,7 @@ package client;
 
 import java.rmi.Naming;
 import java.rmi.RemoteException;
-import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -77,9 +77,9 @@ public class ClientRMIManager {
 		return machine;
 	}
 	
-	public ArrayList<FileUnit> listDir(String fullDirPath) {
+	public List<FileUnit> listDir(String fullDirPath) {
 		logger.entry(fullDirPath);
-		ArrayList<FileUnit> fileUnits = null;
+		List<FileUnit> fileUnits = null;
 		try {
 			fileUnits = namingService.listDir(fullDirPath);
 		} catch (RemoteException e) {
@@ -146,9 +146,20 @@ public class ClientRMIManager {
 	}
 	
 	public boolean storageServerAppendWriteFile(String fullFilePath, byte[] data) {
-		logger.entry(fullFilePath);
+		logger.entry(fullFilePath, "len:" + data.length);
 		try {
 			return storageService.appendWriteFile(fullFilePath, data, true);
+		} catch (RemoteException e) {
+			logger.error(e);
+			e.printStackTrace();
+		}
+		return false;
+	}
+	
+	public boolean storageServerRandomWriteFile(String fullFilePath, long pos, byte[] data) {
+		logger.entry(fullFilePath, pos, "len:" + data.length);
+		try {
+			return storageService.randomWriteFile(fullFilePath, pos, data, true);
 		} catch (RemoteException e) {
 			logger.error(e);
 			e.printStackTrace();

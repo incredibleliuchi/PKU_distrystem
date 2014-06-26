@@ -4,10 +4,10 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.rmi.Naming;
 import java.rmi.registry.LocateRegistry;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -16,12 +16,12 @@ import javax.swing.Timer;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import datastructure.FileUnit;
 import rmi.NamingService;
 import rmi.NamingServiceImpl;
 import server.Machine;
 import server.Server;
 import util.Variables;
+import datastructure.FileUnit;
 
 public class NamingServer implements Server {
 	private static final Logger logger = LogManager.getLogger(NamingServer.class);
@@ -93,7 +93,7 @@ public class NamingServer implements Server {
 	}
 
 	private void refreshDirRecordWithMachineInvalid(Machine invalidMachine, FileUnit nowDir) {
-		ArrayList<FileUnit> fileUnits = nowDir.list();
+		List<FileUnit> fileUnits = nowDir.list();
 		for (int j = 0; j < fileUnits.size(); j++) {
 			FileUnit fileUnit = fileUnits.get(j);
 			if (fileUnit.isDir()) {

@@ -4,6 +4,7 @@ import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.logging.log4j.LogManager;
@@ -47,7 +48,7 @@ public class NamingServiceImpl extends UnicastRemoteObject implements NamingServ
 		for (int i = 0; i < path.length; i++) {
 			
 			if (i != path.length-1) {
-				ArrayList<FileUnit> fileUnits = nowFileUnit.list();
+				List<FileUnit> fileUnits = nowFileUnit.list();
 				boolean isCreatedDir = false;
 				for (int j = 0; j < fileUnits.size(); j++) {
 					if (fileUnits.get(j).isDir() && fileUnits.get(j).getName().equals(path[i])) {
@@ -60,11 +61,11 @@ public class NamingServiceImpl extends UnicastRemoteObject implements NamingServ
 					return null;
 				}
 			} else {
-				ArrayList<FileUnit> fileUnits = nowFileUnit.list();
+				List<FileUnit> fileUnits = nowFileUnit.list();
 				boolean isCreatedFile = false;
 				for (int j = 0; j < fileUnits.size(); j++) {
 					if (!fileUnits.get(j).isDir() && fileUnits.get(j).getName().equals(path[i])) {
-						System.out.println(fileUnits.get(j).getName());
+						logger.info("isCreatedFile:" + fileUnits.get(j).getName());
 						isCreatedFile = true;
 						break;
 					}
@@ -86,7 +87,7 @@ public class NamingServiceImpl extends UnicastRemoteObject implements NamingServ
 		String[] path = fullFilePath.split("/");
 		FileUnit nowFileUnit = namingServer.getRoot();
 		for (int i = 0; i < path.length; i++) {
-			ArrayList<FileUnit> fileUnits = nowFileUnit.list();
+			List<FileUnit> fileUnits = nowFileUnit.list();
 			for (int j = 0; j < fileUnits.size(); j++) {
 				if (i != path.length-1) {
 					if (fileUnits.get(j).isDir() && fileUnits.get(j).getName().equals(path[i])) {
@@ -119,7 +120,7 @@ public class NamingServiceImpl extends UnicastRemoteObject implements NamingServ
 		for (int i = 0; i < path.length; i++) {
 			
 			if (i != path.length-1) {
-				ArrayList<FileUnit> fileUnits = nowFileUnit.list();
+				List<FileUnit> fileUnits = nowFileUnit.list();
 				boolean isCreatedDir = false;
 				for (int j = 0; j < fileUnits.size(); j++) {
 					if (fileUnits.get(j).isDir() && fileUnits.get(j).getName().equals(path[i])) {
@@ -132,7 +133,7 @@ public class NamingServiceImpl extends UnicastRemoteObject implements NamingServ
 					return null;
 				}
 			} else {
-				ArrayList<FileUnit> fileUnits = nowFileUnit.list();
+				List<FileUnit> fileUnits = nowFileUnit.list();
 				boolean isCreatedDir = false;
 				for (int j = 0; j < fileUnits.size(); j++) {
 					if (fileUnits.get(j).isDir() && fileUnits.get(j).getName().equals(path[i])) {
@@ -157,7 +158,7 @@ public class NamingServiceImpl extends UnicastRemoteObject implements NamingServ
 		String[] path = fullDirPath.split("/");
 		FileUnit nowFileUnit = namingServer.getRoot();
 		for (int i = 0; i < path.length; i++) {
-			ArrayList<FileUnit> fileUnits = nowFileUnit.list();
+			List<FileUnit> fileUnits = nowFileUnit.list();
 			for (int j = 0; j < fileUnits.size(); j++) {
 				if (i != path.length-1) {
 					if (fileUnits.get(j).isDir() && fileUnits.get(j).getName().equals(path[i])) {
@@ -178,7 +179,7 @@ public class NamingServiceImpl extends UnicastRemoteObject implements NamingServ
 	}
 
 	@Override
-	public ArrayList<FileUnit> listDir(String fullDirPath)
+	public List<FileUnit> listDir(String fullDirPath)
 			throws RemoteException {
 		logger.entry(fullDirPath);
 		NamingServer namingServer = NamingServer.getInstance();
@@ -188,7 +189,7 @@ public class NamingServiceImpl extends UnicastRemoteObject implements NamingServ
 			return nowFileUnit.list();
 		}
 		for (int i = 0; i < path.length; i++) {
-			ArrayList<FileUnit> fileUnits = nowFileUnit.list();
+			List<FileUnit> fileUnits = nowFileUnit.list();
 			for (int j = 0; j < fileUnits.size(); j++) {
 				if (i != path.length-1) {
 					if (fileUnits.get(j).isDir() && fileUnits.get(j).getName().equals(path[i])) {
@@ -208,13 +209,13 @@ public class NamingServiceImpl extends UnicastRemoteObject implements NamingServ
 		return nowFileUnit.list();
 	}
 
-	private ArrayList<SynchroMeta> addToDir(Machine machine, FileUnit srcDir, FileUnit targetDir, String lastDirName) {
+	private List<SynchroMeta> addToDir(Machine machine, FileUnit srcDir, FileUnit targetDir, String lastDirName) {
 		
-		ArrayList<SynchroMeta> synchroMetas = new ArrayList<>();
+		List<SynchroMeta> synchroMetas = new ArrayList<>();
 		
-		ArrayList<FileUnit> srcLowerFileUnits = srcDir.list();
+		List<FileUnit> srcLowerFileUnits = srcDir.list();
 		for (FileUnit toAddFileUnit : srcLowerFileUnits) {
-			ArrayList<FileUnit> targetLowerFileUnits = targetDir.list();
+			List<FileUnit> targetLowerFileUnits = targetDir.list();
 			boolean isExist = false;
 			boolean isTypeEqual = true;
 			FileUnit targetAddedFileUnit = null;
@@ -224,7 +225,7 @@ public class NamingServiceImpl extends UnicastRemoteObject implements NamingServ
 					if (existFileUnit.isDir() != toAddFileUnit.isDir()) {
 						isTypeEqual = false;
 					} else {
-						ArrayList<Machine> machines = existFileUnit.getAllMachines();
+						List<Machine> machines = existFileUnit.getAllMachines();
 						boolean isRecordThisMachine = false;
 						for (Machine recordMachine : machines) {
 							if (recordMachine.ip.equals(machine.ip) && recordMachine.port == machine.port) {
@@ -254,7 +255,7 @@ public class NamingServiceImpl extends UnicastRemoteObject implements NamingServ
 				targetDir.addLowerFileUnit(targetAddedFileUnit);
 			}
 			if (targetAddedFileUnit.isDir()) {
-				ArrayList<SynchroMeta> lowerSynchroMetas = addToDir(machine, toAddFileUnit, targetAddedFileUnit, lastDirName+"/"+targetAddedFileUnit.getName());
+				List<SynchroMeta> lowerSynchroMetas = addToDir(machine, toAddFileUnit, targetAddedFileUnit, lastDirName+"/"+targetAddedFileUnit.getName());
 				synchroMetas.addAll(lowerSynchroMetas);
 			}
 		}
@@ -263,11 +264,11 @@ public class NamingServiceImpl extends UnicastRemoteObject implements NamingServ
 	}
 	
 	@Override
-	public ArrayList<SynchroMeta> informOnline(Machine machine, FileUnit localRoot)
+	public List<SynchroMeta> informOnline(Machine machine, FileUnit localRoot)
 			throws RemoteException {
 		logger.entry(machine, localRoot);
 		FileUnit root = NamingServer.getInstance().getRoot();
-		ArrayList<SynchroMeta> result = addToDir(machine, localRoot, root, "");
+		List<SynchroMeta> result = addToDir(machine, localRoot, root, "");
 		return result;
 	}
 
@@ -275,7 +276,7 @@ public class NamingServiceImpl extends UnicastRemoteObject implements NamingServ
 		FileUnit nowFileUnit = NamingServer.getInstance().getRoot();
 		String[] path = fullFilePath.split("/");
 		for (int i = 0; i < path.length-1; i++) {
-			ArrayList<FileUnit> fileUnits = nowFileUnit.list();
+			List<FileUnit> fileUnits = nowFileUnit.list();
 			for (int j = 0; j < fileUnits.size(); j++) {
 				if (fileUnits.get(j).isDir() && fileUnits.get(j).getName().equals(path[i])) {
 					nowFileUnit = fileUnits.get(j);
@@ -287,13 +288,13 @@ public class NamingServiceImpl extends UnicastRemoteObject implements NamingServ
 	}
 	
 	@Override
-	public ArrayList<Machine> notifyCreateFile(String fullFilePath,
+	public List<Machine> notifyCreateFile(String fullFilePath,
 			boolean isOrigin, Machine operateMachine) throws RemoteException {
 		logger.entry(fullFilePath, isOrigin, operateMachine);
 		FileUnit fatheFileUnit = NamingServer.getInstance().getRoot();
 		String[] path = fullFilePath.split("/");
 		for (int i = 0; i < path.length-1; i++) {
-			ArrayList<FileUnit> fileUnits = fatheFileUnit.list();
+			List<FileUnit> fileUnits = fatheFileUnit.list();
 			for (int j = 0; j < fileUnits.size(); j++) {
 				if (fileUnits.get(j).isDir() && fileUnits.get(j).getName().equals(path[i])) {
 					fatheFileUnit = fileUnits.get(j);
@@ -305,7 +306,7 @@ public class NamingServiceImpl extends UnicastRemoteObject implements NamingServ
 
 		String name = path[path.length-1];
 
-		ArrayList<FileUnit> fileUnits = fatheFileUnit.list();
+		List<FileUnit> fileUnits = fatheFileUnit.list();
 		FileUnit changedFileUnit = null;
 		for (int j = 0; j < fileUnits.size(); j++) {
 			if (!fileUnits.get(j).isDir() && fileUnits.get(j).getName().equals(name)) {
@@ -327,7 +328,7 @@ public class NamingServiceImpl extends UnicastRemoteObject implements NamingServ
 			if (namingServer.storageValids.size() < backNum) {
 				backNum = namingServer.storageValids.size() - 1;
 			}
-			ArrayList<Machine> result = new ArrayList<>();
+			List<Machine> result = new ArrayList<>();
 			while (backNum > 0) {
 				Machine machine = new ArrayList<>(namingServer.storageValids.keySet()).get(storeIndex);
 				if (!machine.ip.equals(operateMachine) || machine.port != operateMachine.port) {
@@ -342,7 +343,7 @@ public class NamingServiceImpl extends UnicastRemoteObject implements NamingServ
 	}
 
 	@Override
-	public ArrayList<Machine> notifyDeleteFile(String fullFilePath,
+	public List<Machine> notifyDeleteFile(String fullFilePath,
 			boolean isOrigin, Machine operateMachine) throws RemoteException {
 		logger.entry(fullFilePath, isOrigin, operateMachine);
 		
@@ -350,7 +351,7 @@ public class NamingServiceImpl extends UnicastRemoteObject implements NamingServ
 		String[] path = fullFilePath.split("/");
 		String name = path[path.length-1];
 
-		ArrayList<FileUnit> fileUnits = fatheFileUnit.list();
+		List<FileUnit> fileUnits = fatheFileUnit.list();
 		FileUnit changedFileUnit = null;
 		for (int j = 0; j < fileUnits.size(); j++) {
 			if (!fileUnits.get(j).isDir() && fileUnits.get(j).getName().equals(name)) {
@@ -367,22 +368,21 @@ public class NamingServiceImpl extends UnicastRemoteObject implements NamingServ
 		}
 		
 		if (isOrigin) {
-			ArrayList<Machine> result = changedFileUnit.getAllMachines();
+			List<Machine> result = changedFileUnit.getAllMachines();
 			return result;
 		}
 		return null;
 	}
 
 	@Override
-	public ArrayList<Machine> notifyAppendWriteFile(String fullFilePath,
-			boolean isOrigin, Machine operateMachine) throws RemoteException {
-		logger.entry(fullFilePath, isOrigin, operateMachine);
+	public List<Machine> notifyWriteFile(String fullFilePath, boolean isOrigin) throws RemoteException {
+		logger.entry(fullFilePath, isOrigin);
 		if (isOrigin) {
 			FileUnit fatheFileUnit = findChangedFileUnitFather(fullFilePath);
 			String[] path = fullFilePath.split("/");
 			String name = path[path.length-1];
 
-			ArrayList<FileUnit> fileUnits = fatheFileUnit.list();
+			List<FileUnit> fileUnits = fatheFileUnit.list();
 			FileUnit changedFileUnit = null;
 			for (int j = 0; j < fileUnits.size(); j++) {
 				if (!fileUnits.get(j).isDir() && fileUnits.get(j).getName().equals(name)) {
@@ -394,7 +394,7 @@ public class NamingServiceImpl extends UnicastRemoteObject implements NamingServ
 				return null;
 			}
 
-			ArrayList<Machine> result = changedFileUnit.getAllMachines();
+			List<Machine> result = changedFileUnit.getAllMachines();
 			for (int i = 0; i < result.size(); i++) {
 				if (!fileUnits.get(i).isDir() && fileUnits.get(i).getName().equals(name)) {
 					result.remove(i);
@@ -407,14 +407,14 @@ public class NamingServiceImpl extends UnicastRemoteObject implements NamingServ
 	}
 
 	@Override
-	public ArrayList<Machine> notifyCreateDir(String fullDirPath,
+	public List<Machine> notifyCreateDir(String fullDirPath,
 			boolean isOrigin, Machine operateMachine) throws RemoteException {
 		logger.entry(fullDirPath, isOrigin, operateMachine);
 		FileUnit fatheFileUnit = findChangedFileUnitFather(fullDirPath);
 		String[] path = fullDirPath.split("/");
 		String name = path[path.length-1];
 
-		ArrayList<FileUnit> fileUnits = fatheFileUnit.list();
+		List<FileUnit> fileUnits = fatheFileUnit.list();
 		FileUnit changedFileUnit = null;
 		for (int j = 0; j < fileUnits.size(); j++) {
 			if (fileUnits.get(j).isDir() && fileUnits.get(j).getName().equals(name)) {
@@ -436,7 +436,7 @@ public class NamingServiceImpl extends UnicastRemoteObject implements NamingServ
 			if (namingServer.storageValids.size() < backNum) {
 				backNum = namingServer.storageValids.size() - 1;
 			}
-			ArrayList<Machine> result = new ArrayList<>();
+			List<Machine> result = new ArrayList<>();
 			while (backNum > 0) {
 				Machine machine = new ArrayList<>(namingServer.storageValids.keySet()).get(storeIndex);
 				if (!machine.ip.equals(operateMachine) || machine.port != operateMachine.port) {
@@ -451,14 +451,14 @@ public class NamingServiceImpl extends UnicastRemoteObject implements NamingServ
 	}
 
 	@Override
-	public ArrayList<Machine> notifyDeleteDir(String fullDirPath,
+	public List<Machine> notifyDeleteDir(String fullDirPath,
 			boolean isOrigin, Machine operateMachine) throws RemoteException {
 		logger.entry(fullDirPath, isOrigin, operateMachine);
 		FileUnit fatheFileUnit = findChangedFileUnitFather(fullDirPath);
 		String[] path = fullDirPath.split("/");
 		String name = path[path.length-1];
 
-		ArrayList<FileUnit> fileUnits = fatheFileUnit.list();
+		List<FileUnit> fileUnits = fatheFileUnit.list();
 		FileUnit changedFileUnit = null;
 		for (int j = 0; j < fileUnits.size(); j++) {
 			if (fileUnits.get(j).isDir() && fileUnits.get(j).getName().equals(name)) {
@@ -475,7 +475,7 @@ public class NamingServiceImpl extends UnicastRemoteObject implements NamingServ
 		}
 		
 		if (isOrigin) {
-			ArrayList<Machine> result = changedFileUnit.getAllMachines();
+			List<Machine> result = changedFileUnit.getAllMachines();
 			return result;
 		}
 		return null;

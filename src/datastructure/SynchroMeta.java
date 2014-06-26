@@ -4,18 +4,14 @@ import java.io.Serializable;
 
 import server.Machine;
 
-public class SynchroMeta  implements Serializable {
-	
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 7713863239555967251L;
+public class SynchroMeta implements Serializable {
+	private static final long serialVersionUID = 1L;
 	public static final int DELETE = 0;
 	public static final int CONFIRM = 1;
 	
-	private String path;
-	private int opType;
-	private Machine targetMachine;
+	private final String path;
+	private final int opType;
+	private final Machine targetMachine;
 
 	public SynchroMeta(String path, int opType, Machine targetMachine) {
 		this.path = path;
@@ -34,5 +30,4 @@ public class SynchroMeta  implements Serializable {
 	public Machine getTargetMachine() {
 		return targetMachine;
 	}
-	
 }

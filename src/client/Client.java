@@ -1,7 +1,7 @@
 package client;
 
 import java.io.UnsupportedEncodingException;
-import java.util.ArrayList;
+import java.util.List;
 
 import server.Machine;
 import datastructure.FileUnit;
@@ -119,6 +119,23 @@ public class Client {
 		return rmiManager.storageServerAppendWriteFile(fullFilePath, data);
 	}
 	
+	public boolean randomWriteFile(String fullFilePath, long pos, byte[] data) {
+		if (fullFilePath.equals("")) {
+			return false;
+		}
+		
+		Machine targetMachine = rmiManager.getFileLocation(fullFilePath);
+		if (targetMachine == null) {
+			return false;
+		}
+		
+		if (!rmiManager.connectToStorageServer(targetMachine)) {
+			return false;
+		}
+		
+		return rmiManager.storageServerRandomWriteFile(fullFilePath, pos, data);
+	}
+	
 	public boolean createDir(String fullDirPath) {
 
 		if (fullDirPath.equals("")) {
@@ -155,8 +172,8 @@ public class Client {
 		return rmiManager.storageServerDeleteDir(fullDirPath);
 	}
 	
-	public ArrayList<FileUnit> listDir(String fullDirPath) {
-		ArrayList<FileUnit> result = rmiManager.listDir(fullDirPath);
+	public List<FileUnit> listDir(String fullDirPath) {
+		List<FileUnit> result = rmiManager.listDir(fullDirPath);
 		return result;
 	}
 	
@@ -173,12 +190,14 @@ public class Client {
 		byte[] data = "This is a shit.".getBytes("utf8");
 		System.out.println(client.appendWriteFile("liuchi.txt", data));
 		System.out.println(client.appendWriteFile("liuchi.txt", data));
+		String content = new String(client.getFile("liuchi.txt"), "utf8");
+		System.out.println(content);
 		
 		System.out.println("=======================");
 		
 		System.out.println(client.getSizeOfFile("liuchi.txt"));
 		
-		ArrayList<FileUnit> dir = client.listDir("");
+		List<FileUnit> dir = client.listDir("");
 		for (FileUnit fileUnit : dir) {
 			System.out.println(fileUnit.getName() + " " + fileUnit.isDir());
 		}

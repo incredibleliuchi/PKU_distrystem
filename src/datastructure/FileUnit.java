@@ -2,16 +2,19 @@ package datastructure;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.List;
 
 import server.Machine;
 
+/**
+ * A file unit which can be a file or directory. 
+ */
 public class FileUnit  implements Serializable {
-	
-	private static final long serialVersionUID = 8247624941002229076L;
-	private String name;
-	private boolean isDir;
-	private ArrayList<FileUnit> lowerFileUnits;
-	private ArrayList<Machine> storageMachines;
+	private static final long serialVersionUID = 1L;
+	private final String name;
+	private final boolean isDir;
+	private List<FileUnit> lowerFileUnits;
+	private final List<Machine> storageMachines;
 	
 	public FileUnit(String name, boolean isDir) {
 		this.name = name;
@@ -25,12 +28,15 @@ public class FileUnit  implements Serializable {
 	public String getName() {
 		return name;
 	}
+	
 	public boolean isDir() {
 		return isDir;
 	}
-	public ArrayList<FileUnit> list() {
+	
+	public List<FileUnit> list() {
 		return lowerFileUnits;
 	}
+	
 	public boolean addLowerFileUnit(FileUnit fileUnit) {
 		if (isDir) {
 			for (int i = 0; i < lowerFileUnits.size(); i++) {
@@ -52,9 +58,11 @@ public class FileUnit  implements Serializable {
 		}
 		storageMachines.add(machine);
 	}
+	
 	public int getStorageMachineNum() {
 		return storageMachines.size();
 	}
+	
 	public void deleteStorageMachine(Machine machine) {
 		for (int i=0; i<storageMachines.size(); ++i) {
 			if (storageMachines.get(i).port == machine.port && storageMachines.get(i).ip.equals(machine.ip)) {
@@ -63,9 +71,11 @@ public class FileUnit  implements Serializable {
 			}
 		}
 	}
-	public ArrayList<Machine> getAllMachines() {
+	
+	public List<Machine> getAllMachines() {
 		return storageMachines;
 	}
+	
 	public void deleteLowerFileUnit(FileUnit target) {
 		for (int i = 0; i < lowerFileUnits.size(); i++) {
 			if (lowerFileUnits.get(i).name == target.name && lowerFileUnits.get(i).isDir == target.isDir) {
