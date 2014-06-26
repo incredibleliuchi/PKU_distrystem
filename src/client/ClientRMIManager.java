@@ -32,6 +32,7 @@ public class ClientRMIManager {
 	}
 	
 	public Machine getCreateFileLocation(String fullFilePath) {
+		logger.entry(fullFilePath);
 		Machine machine = null;
 		try {
 			machine = namingService.createFile(fullFilePath);
@@ -43,6 +44,7 @@ public class ClientRMIManager {
 	}
 	
 	public Machine getFileLocation(String fullFilePath) {
+		logger.entry(fullFilePath);
 		Machine machine = null;
 		try {
 			machine = namingService.getFileLocation(fullFilePath);
@@ -54,6 +56,7 @@ public class ClientRMIManager {
 	}
 
 	public Machine getCreateDirLocation(String fullDirPath) {
+		logger.entry(fullDirPath);
 		Machine machine = null;
 		try {
 			machine = namingService.createDir(fullDirPath);
@@ -65,6 +68,7 @@ public class ClientRMIManager {
 	}
 	
 	public Machine getDirLocation(String fullDirPath) {
+		logger.entry(fullDirPath);
 		Machine machine = null;
 		try {
 			machine = namingService.getDirLocation(fullDirPath);
@@ -76,6 +80,7 @@ public class ClientRMIManager {
 	}
 	
 	public ArrayList<FileUnit> listDir(String fullDirPath) {
+		logger.entry(fullDirPath);
 		ArrayList<FileUnit> fileUnits = null;
 		try {
 			fileUnits = namingService.listDir(fullDirPath);
@@ -87,6 +92,7 @@ public class ClientRMIManager {
 	}
 
 	public boolean connectToStorageServer(Machine machine) {
+		logger.entry(machine);
 		try {
 			storageService = (StorageService) Naming.lookup(machine.getAddress(StorageService.class.getName()));
 			return true;
@@ -97,6 +103,7 @@ public class ClientRMIManager {
 	}
 	
 	public boolean storageServerCreateFile(String fullFilePath) {
+		logger.entry(fullFilePath);
 		try {
 			return storageService.createFile(fullFilePath, true);
 		} catch (RemoteException e) {
@@ -106,6 +113,7 @@ public class ClientRMIManager {
 	}
 	
 	public byte[] storageServerGetFile(String fullFilePath) {
+		logger.entry(fullFilePath);
 		try {
 			return storageService.getFile(fullFilePath);
 		} catch (RemoteException e) {
@@ -115,6 +123,7 @@ public class ClientRMIManager {
 	}
 	
 	public boolean storageServerDeleteFile(String fullFilePath) {
+		logger.entry(fullFilePath);
 		try {
 			return storageService.deleteFile(fullFilePath, true);
 		} catch (RemoteException e) {
@@ -124,6 +133,7 @@ public class ClientRMIManager {
 	}
 	
 	public long storageServerGetSizeOfFile(String fullFilePath) {
+		logger.entry(fullFilePath);
 		try {
 			return storageService.getSizeOfFile(fullFilePath);
 		} catch (RemoteException e) {
@@ -133,6 +143,7 @@ public class ClientRMIManager {
 	}
 	
 	public boolean storageServerAppendWriteFile(String fullFilePath, byte[] data) {
+		logger.entry(fullFilePath);
 		try {
 			return storageService.appendWriteFile(fullFilePath, data, true);
 		} catch (RemoteException e) {
@@ -142,6 +153,7 @@ public class ClientRMIManager {
 	}
 	
 	public boolean storageServerCreateDir(String fullDirPath) {
+		logger.entry(fullDirPath);
 		try {
 			return storageService.createDir(fullDirPath, true);
 		} catch (RemoteException e) {
@@ -151,6 +163,7 @@ public class ClientRMIManager {
 	}
 	
 	public boolean storageServerDeleteDir(String fullDirPath) {
+		logger.entry(fullDirPath);
 		try {
 			return storageService.deleteDir(fullDirPath, true);
 		} catch (RemoteException e) {

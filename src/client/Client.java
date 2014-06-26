@@ -180,18 +180,9 @@ public class Client {
 		
 		System.out.println(client.getSizeOfFile("liuchi.txt"));
 		
-		//System.out.println(client.isExistFile("aaa"));
-		//System.out.println(client.isExistFile("aaa/ddd.tt"));
-		//System.out.println(client.isExistFile("aaa/dcc.ee"));
-		//System.out.println(client.isExistFile("qwer"));
-		
 		ArrayList<FileUnit> dir = client.listDir("");
 		for (FileUnit fileUnit : dir) {
 			System.out.println(fileUnit.getName() + " " + fileUnit.isDir());
-		}
-		data = client.getFile("liuchi.ddd");
-		for (int i = 0; i < data.length; i++) {
-			System.out.println(data[i]);
 		}
 	}
 }
