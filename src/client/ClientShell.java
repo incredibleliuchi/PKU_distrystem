@@ -19,7 +19,7 @@ class Args4J {
 	@Option(name = "-l")
 	int length = 0;
 	
-	@Option(name = "-pos")
+	@Option(name = "-p")
 	long pos = 0L;
 
 	@Option(name = "-size", usage = "size filepath")
@@ -60,12 +60,12 @@ class Args4J {
 }
 
 public class ClientShell {
-	private static final Client client = new Client();
-	private static final Args4J args4j = new Args4J();
-	private static final CmdLineParser parser = new CmdLineParser(args4j);
 	
 	public static void main(String[] args) throws Exception {
-		
+
+		final Client client = new Client();
+		final Args4J args4j = new Args4J();
+		final CmdLineParser parser = new CmdLineParser(args4j);
 		parser.parseArgument(args);
 		if ( args.length == 0 ) {
 			parser.printUsage(System.out);
@@ -122,13 +122,19 @@ public class ClientShell {
 			
 		} else if ( args4j.listPath != null ) {
 			final List<FileUnit> units = client.listDir(args4j.listPath);
+			for (FileUnit fileUnit : units) {
+				System.out.println(args4j.listPath + "/" + fileUnit);
+			}
 			
 		} else if ( args4j.existPath != null ) {
 			final boolean success = client.isExistFile(args4j.existPath);
 			System.out.println(success ? "True" : "False");
 			
 		} else if ( args4j.log ) {
-			final List<FileUnit> units = client.listDir(args4j.listPath);
+			final List<FileUnit> units = client.listDir("");
+			for (FileUnit unit : units) {
+				unit.listRecursively(System.out);
+			}
 			
 		} else if ( args4j.quit ) {
 			System.exit(0);

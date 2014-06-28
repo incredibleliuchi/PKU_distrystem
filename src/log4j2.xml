@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration status="error">  
-  <appenders>  
-    <Console name="Console" target="SYSTEM_ERR">  
+  <appenders>
+    <Console name="Console" target="SYSTEM_ERR">
       <ThresholdFilter level="trace" onMatch="ACCEPT" onMismatch="DENY"/>
       <PatternLayout pattern="%d{HH:mm:ss.SSS} %-5level %-5.5t:%class{36} %L %M - %msg%xEx%n"/>  
     </Console>
-    <RollingFile name="RollingFile" fileName="logs/app.log"    
-                 filePattern="logs/$${date:yyyy-MM}/app-%d{MM-dd-yyyy}-%i.log.gz">    
+    <RollingFile name="RollingFile" fileName="logs/app.log"
+                 filePattern="logs/$${date:yyyy-MM}/app-%d{MM-dd-yyyy}-%i.log.gz">
       <PatternLayout pattern="%d{yyyy.MM.dd 'at' HH:mm:ss z} %-5level %-5.5t:%class{36} %L %M - %msg%xEx%n"/>    
-      <SizeBasedTriggeringPolicy size="100 MB" />    
+      <SizeBasedTriggeringPolicy size="100 MB" />
     </RollingFile>
     <File name="File" fileName="logs/last.log" append="false">
       <PatternLayout pattern="%d{HH:mm:ss.SSS} %-5level %-5.5t:%class{36} %L %M - %msg%xEx%n"/>    
@@ -16,16 +16,13 @@
   </appenders>
   <loggers>
     <root level="trace">  
-      <appender-ref ref="RollingFile"/>  
+      <appender-ref ref="RollingFile"/>
       <appender-ref ref="Console"/>   
-      <appender-ref ref="File"/>  
+      <appender-ref ref="File"/>
     </root>
+    <!--
     <logger name="client.ClientRMIManager" level="debug" additivity="false">
     </logger>
-    <!--
-    <logger name="user.User" level="debug" additivity="false">
-    </logger> 
-    <logger name="page.Fetcher" level="debug" additivity="false">
-    </logger> -->
-  </loggers>  
+     -->
+  </loggers>
 </configuration>  

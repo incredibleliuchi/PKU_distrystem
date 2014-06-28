@@ -1,5 +1,7 @@
 package datastructure;
 
+import java.io.OutputStream;
+import java.io.PrintWriter;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -83,11 +85,28 @@ public class FileUnit  implements Serializable {
 				break;
 			}
 		}
-		
+	}
+	
+
+	public void listRecursively(OutputStream out) {
+		listRecursively(out, "");
+	}
+	
+	private void listRecursively(OutputStream out, String prefix) {
+		PrintWriter writer = new PrintWriter(out);
+		if (lowerFileUnits == null) return;
+		for (FileUnit unit : lowerFileUnits) {
+			writer.write(prefix + "/" + unit + " -- ");
+			for (Machine machine : unit.storageMachines) {
+				writer.write(machine + ";");
+			}
+			writer.write("\n");
+			if ( unit.isDir ) listRecursively(out, prefix + "/" + unit.name);
+		}
 	}
 
 	@Override
 	public String toString() {
-		return (isDir ? "d" : "f") + "/" + name; 
+		return name + "[" + (isDir ? "d" : "f") + "]"; 
 	}
 }
