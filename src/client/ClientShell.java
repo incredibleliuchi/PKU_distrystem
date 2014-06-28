@@ -127,10 +127,6 @@ public class ClientShell {
 			if ( units == null ) throw new RuntimeException("command execution error");
 			for (FileUnit fileUnit : units) {
 				System.out.println(args4j.listPath + "/" + fileUnit);
-				List<Machine> machines = fileUnit.getAllMachines();
-				for (Machine machine : machines) {
-					System.out.println("\t"+machine.port);
-				}
 			}
 			
 		} else if ( args4j.existPath != null ) {
