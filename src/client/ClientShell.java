@@ -123,9 +123,11 @@ public class ClientShell {
 			
 		} else if ( args4j.listPath != null ) {
 			final List<FileUnit> units = client.listDir(args4j.listPath);
+			String prefix = args4j.listPath;
+			if (prefix.length() > 0 && prefix.charAt(prefix.length() - 1) != '/') prefix += "/";
 			if ( units == null ) throw new RuntimeException("command execution error");
 			for (FileUnit fileUnit : units) {
-				System.out.println(args4j.listPath + "/" + fileUnit);
+				System.out.println(prefix + fileUnit);
 			}
 			
 		} else if ( args4j.existPath != null ) {
@@ -136,12 +138,12 @@ public class ClientShell {
 			final List<FileUnit> units = client.listDir("");
 			if ( units == null ) throw new RuntimeException("command execution error");
 			for (FileUnit unit : units) {
-				System.out.write(("/" + unit + " -- ").getBytes("utf8"));
+				System.out.write((unit + " -- ").getBytes("utf8"));
 				for (Machine machine : unit.getAllMachines()) {
 					System.out.write((machine + ";").getBytes("utf8"));
 				}
 				System.out.println();
-				unit.listRecursively(System.out, "/" + unit.getName());
+				unit.listRecursively(System.out, unit.getName());
 			}
 			
 		} else if ( args4j.quit ) {

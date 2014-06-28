@@ -101,14 +101,15 @@ public class FileUnit implements Serializable {
 	
 	public void listRecursively(OutputStream out, String prefix) {
 		if (lowerFileUnits == null) return;
+		if (prefix.length() > 0 && prefix.charAt(prefix.length() - 1) != '/') prefix += "/";
 		try {
 			for (FileUnit unit : lowerFileUnits) {
-				out.write((prefix + "/" + unit + " -- ").getBytes("utf8"));
+				out.write((prefix + unit + " -- ").getBytes("utf8"));
 				for (Machine machine : unit.storageMachines) {
-					out.write((machine + ";").getBytes("utf8"));
+					out.write((machine + "; ").getBytes("utf8"));
 				}
 				out.write("\n".getBytes("utf8"));
-				if ( unit.isDir ) listRecursively(out, prefix + "/" + unit.name);
+				if ( unit.isDir ) unit.listRecursively(out, prefix + unit.name);
 			}
 		} catch (Exception e) {
 			logger.error(e);

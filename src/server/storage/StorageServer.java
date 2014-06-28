@@ -371,7 +371,7 @@ public class StorageServer implements Server {
 				randomFile.close();
 				return false;
 			}
-            randomFile.seek(fileLength);
+            randomFile.seek(pos);
             randomFile.write(data);
 			
 		} catch (Exception e) {
