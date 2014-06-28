@@ -1,13 +1,19 @@
 package client;
 
-import java.io.UnsupportedEncodingException;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 import java.util.List;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import server.Machine;
+import util.CmdLineUtils;
 import datastructure.FileUnit;
 
 
 public class Client {
+	private static final Logger logger = LogManager.getLogger(Client.class);
 	
 	private ClientRMIManager rmiManager;
 	
@@ -16,7 +22,6 @@ public class Client {
 	}
 	
 	public boolean createFile(String fullFilePath) {
-
 		if (fullFilePath.equals("")) {
 			return false;
 		}
@@ -33,8 +38,24 @@ public class Client {
 		return rmiManager.storageServerCreateFile(fullFilePath);
 	}
 	
+	public byte[] randomReadFile(String fullFilePath, long pos, int size) {
+		if (fullFilePath.equals("")) {
+			return null;
+		}
+		
+		Machine targetMachine = rmiManager.getFileLocation(fullFilePath);
+		if (targetMachine == null) {
+			return null;
+		}
+		
+		if (!rmiManager.connectToStorageServer(targetMachine)) {
+			return null;
+		}
+		
+		return rmiManager.storageServerRandomReadFile(fullFilePath, pos, size);
+	}
+	
 	public byte[] getFile(String fullFilePath) {
-
 		if (fullFilePath.equals("")) {
 			return null;
 		}
@@ -52,7 +73,6 @@ public class Client {
 	}
 	
 	public boolean deleteFile(String fullFilePath) {
-
 		if (fullFilePath.equals("")) {
 			return false;
 		}
@@ -70,7 +90,6 @@ public class Client {
 	}
 	
 	public boolean isExistFile(String fullFilePath) {
-
 		if (fullFilePath.equals("")) {
 			return false;
 		}
@@ -84,7 +103,6 @@ public class Client {
 	}
 	
 	public long getSizeOfFile(String fullFilePath) {
-
 		if (fullFilePath.equals("")) {
 			return -1;
 		}
@@ -102,7 +120,6 @@ public class Client {
 	}
 
 	public boolean appendWriteFile(String fullFilePath, byte[] data) {
-
 		if (fullFilePath.equals("")) {
 			return false;
 		}
@@ -137,7 +154,6 @@ public class Client {
 	}
 	
 	public boolean createDir(String fullDirPath) {
-
 		if (fullDirPath.equals("")) {
 			return false;
 		}
@@ -155,7 +171,6 @@ public class Client {
 	}
 	
 	public boolean deleteDir(String fullDirPath) {
-
 		if (fullDirPath.equals("")) {
 			return false;
 		}
@@ -177,29 +192,41 @@ public class Client {
 		return result;
 	}
 	
-	public static void main(String[] args) throws UnsupportedEncodingException {
-		Client client = new Client();
+	
+	public static void main(String[] args) throws Exception {
 
-		System.out.println(client.createDir("aaa"));
-		System.out.println(client.createFile("aaa/ddd.txt"));
-		System.out.println(client.createDir("aaa/bbb"));
-		System.out.println(client.createFile("aaa/bbb/ddd.txt"));
-		System.out.println(client.createFile("aaa/bbb/ccc/ddd.txt"));
-		System.out.println(client.deleteFile("aaa/ddd.tt"));
-		System.out.println(client.createFile("liuchi.txt"));
-		byte[] data = "This is a shit.".getBytes("utf8");
-		System.out.println(client.appendWriteFile("liuchi.txt", data));
-		System.out.println(client.appendWriteFile("liuchi.txt", data));
-		String content = new String(client.getFile("liuchi.txt"), "utf8");
-		System.out.println(content);
-		
-		System.out.println("=======================");
-		
-		System.out.println(client.getSizeOfFile("liuchi.txt"));
-		
-		List<FileUnit> dir = client.listDir("");
-		for (FileUnit fileUnit : dir) {
-			System.out.println(fileUnit.getName() + " " + fileUnit.isDir());
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		while (true) {
+			String line = br.readLine();
+			try {
+				String[] argv = CmdLineUtils.parse(line);
+				ClientShell.main(argv);
+			} catch (Exception e) {
+				logger.error(e);
+				e.printStackTrace();
+			}
 		}
+		
+//		System.out.println(client.createDir("aaa"));
+//		System.out.println(client.createFile("aaa/ddd.txt"));
+//		System.out.println(client.createDir("aaa/bbb"));
+//		System.out.println(client.createFile("aaa/bbb/ddd.txt"));
+//		System.out.println(client.createFile("aaa/bbb/ccc/ddd.txt"));
+//		System.out.println(client.deleteFile("aaa/ddd.tt"));
+//		System.out.println(client.createFile("liuchi.txt"));
+//		byte[] data = "This is a shit.".getBytes("utf8");
+//		System.out.println(client.appendWriteFile("liuchi.txt", data));
+//		System.out.println(client.appendWriteFile("liuchi.txt", data));
+//		String content = new String(client.getFile("liuchi.txt"), "utf8");
+//		System.out.println(content);
+//		
+//		System.out.println("=======================");
+//		
+//		System.out.println(client.getSizeOfFile("liuchi.txt"));
+//		
+//		List<FileUnit> dir = client.listDir("");
+//		for (FileUnit fileUnit : dir) {
+//			System.out.println(fileUnit.getName() + " " + fileUnit.isDir());
+//		}
 	}
 }

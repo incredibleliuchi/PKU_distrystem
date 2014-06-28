@@ -3,6 +3,7 @@ package ui;
 import org.kohsuke.args4j.CmdLineParser;
 import org.kohsuke.args4j.Option;
 
+import client.Client;
 import server.naming.NamingServer;
 import server.storage.StorageServer;
 
@@ -18,10 +19,11 @@ class Args4J {
 	boolean client;
 }
 
+
 public class Main {
 	public static void main(String[] args) throws Exception {
-		Args4J args4j = new Args4J();
-		CmdLineParser parser = new CmdLineParser(args4j);
+		final Args4J args4j = new Args4J();
+		final CmdLineParser parser = new CmdLineParser(args4j);
 		parser.parseArgument(args);
 		if ( args.length == 0 ) {
 			parser.printUsage(System.out);
@@ -35,6 +37,7 @@ public class Main {
 			StorageServer.main(null);
 			
 		} else if ( args4j.client ) {
+			Client.main(null);
 		}
 	}
 }

@@ -10,6 +10,7 @@ import java.io.RandomAccessFile;
 import java.rmi.Naming;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.swing.Timer;
@@ -18,7 +19,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import rmi.NamingService;
-import rmi.NamingServiceImpl;
 import rmi.StorageService;
 import rmi.StorageServiceImpl;
 import server.Machine;
@@ -29,11 +29,11 @@ import datastructure.SynchroMeta;
 
 
 public class StorageServer implements Server {
+	private static final Logger logger = LogManager.getLogger(StorageServer.class);
 	
-	private static final String FILE_STORE_PATH = "storage";
-	private static final String STORAGE_SERVER_NUMBER = "3";
+	private static final String FILE_STORE_PATH = Variables.getInstance().getProperty("myRoot");// "storage";
+//	private static final String STORAGE_SERVER_NUMBER = "3";
 	
-	private static final Logger logger = LogManager.getLogger(NamingServiceImpl.class);
 	private static StorageServer INSTANCE = null;
 	public static StorageServer getInstance() {
 		if ( INSTANCE == null ) INSTANCE = new StorageServer();
@@ -41,10 +41,10 @@ public class StorageServer implements Server {
 	}
 	private StorageServer() {
 		namingServer = new Machine("namingServer");
-		//me = new Machine("my");
-		me = new Machine("storageServer"+STORAGE_SERVER_NUMBER);
+		me = new Machine("my");
+//		me = new Machine("storageServer"+STORAGE_SERVER_NUMBER);
 		
-		fileStoreRootDir = FILE_STORE_PATH + "/" + STORAGE_SERVER_NUMBER;
+		fileStoreRootDir = FILE_STORE_PATH; //+ "/" + STORAGE_SERVER_NUMBER;
 		File storeDir = new File(FILE_STORE_PATH);
 		if (!storeDir.exists()) {
 			storeDir.mkdir();
@@ -243,6 +243,37 @@ public class StorageServer implements Server {
 			}
 		}
 		return buffer;
+	}
+	
+	public byte[] randomReadFile(String fullFilePath, long pos, int size) {
+		File file = locateFile(fullFilePath);
+		if (file == null) {
+			return null;
+		}
+		byte[] res = null;
+		RandomAccessFile randomFile = null;
+		try {
+			randomFile = new RandomAccessFile(file, "r");
+			randomFile.seek(pos);
+			res = new byte [size];
+			int count = randomFile.read(res);
+			if (count < 0) count = 0;
+			res = Arrays.copyOf(res, count);
+			
+		} catch (Exception e) {
+			logger.error(e);
+			e.printStackTrace();
+		} finally {
+			if (randomFile != null) {
+				try {
+					randomFile.close();
+				} catch (IOException e) {
+					logger.error(e);
+					e.printStackTrace();
+				}
+			}
+		}
+		return res;
 	}
 	
 	public boolean deleteFile(String fullFilePath, boolean isOrigin) {

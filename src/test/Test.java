@@ -2,7 +2,11 @@ package test;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
+import java.io.IOException;
+import java.io.RandomAccessFile;
 import java.rmi.Naming;
+import java.util.Arrays;
 
 import javax.swing.Timer;
 
@@ -11,8 +15,25 @@ import server.storage.StorageServer;
 import util.Variables;
 
 public class Test {
-	public static void main(String[] args) {
-		System.out.println();
+	public static void main(String[] args) throws Exception {
+//		System.out.println();
+//		testRandom();
+//		byte[] bs = new byte [] {1, 2, 3};
+//		byte[] c = Arrays.copyOf(bs, 0);
+//		System.out.println(c.length);
+		System.out.println(args[0]);
+	}
+	
+	public static void testRandom() throws Exception {
+		File file = new File("README.md");
+//		System.out.println(file.length());
+		RandomAccessFile rf = new RandomAccessFile(file, "r");
+		rf.seek(31L);
+		byte[] data = new byte[100];
+		int r = rf.read(data);
+		System.out.println(r);
+		System.out.println(new String(data, "utf8"));
+		System.out.println("finish");
 	}
 	
 	public static void testTimer() {

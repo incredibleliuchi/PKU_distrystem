@@ -19,9 +19,18 @@ public interface StorageService extends Remote {
 	/**
 	 * Get a file's byte array.
 	 * @param fullFilePath the file's full path.
-	 * @return the file's byte array.
+	 * @return the file's byte array. Return <b>null</b> if file doesn't exist.
 	 */
 	public byte[] getFile(String fullFilePath) throws RemoteException;
+	
+	/**
+	 * Read data from a file's random position on this storage server.
+	 * @param fullFilePath the to be read file's full path.
+	 * @param pos the file's position which begins to read data.
+	 * @param size the data to be read.
+	 * @return the data byte array. Return <b>null</b> if file doesn't exist.
+	 */
+	public byte[] randomReadFile(String fullFilePath, long pos, int size) throws RemoteException;
 	
 	/**
 	 * Delete a file on this storage server.

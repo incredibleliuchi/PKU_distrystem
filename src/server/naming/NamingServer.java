@@ -43,7 +43,7 @@ public class NamingServer implements Server {
 	 * record the virtual user-view document tree structure
 	 * the root directory
 	 */
-	private FileUnit root;
+	private final FileUnit root;
 	
 	public FileUnit getRoot() {
 		return root;

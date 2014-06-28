@@ -11,7 +11,7 @@ import org.apache.logging.log4j.Logger;
  * Record Variables
  * @author dhuang
  */
-public class Variables {
+public final class Variables {
 	private static final Logger logger = LogManager.getLogger(Variables.class);
 	private static Variables INSTANCE = null;
 	public static Variables getInstance() {

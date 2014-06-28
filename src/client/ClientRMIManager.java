@@ -112,6 +112,17 @@ public class ClientRMIManager {
 		return false;
 	}
 	
+	public byte[] storageServerRandomReadFile(String fullFilePath, long pos, int size) {
+		logger.entry(fullFilePath, pos, size);
+		try {
+			return storageService.randomReadFile(fullFilePath, pos, size);
+		} catch (RemoteException e) {
+			logger.error(e);
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
 	public byte[] storageServerGetFile(String fullFilePath) {
 		logger.entry(fullFilePath);
 		try {

@@ -86,4 +86,8 @@ public class FileUnit  implements Serializable {
 		
 	}
 
+	@Override
+	public String toString() {
+		return (isDir ? "d" : "f") + "/" + name; 
+	}
 }

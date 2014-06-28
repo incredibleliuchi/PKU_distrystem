@@ -26,6 +26,12 @@ public class StorageServiceImpl extends UnicastRemoteObject implements StorageSe
 		return StorageServer.getInstance().getFile(fullFilePath);
 	}
 	@Override
+	public byte[] randomReadFile(String fullFilePath, long pos, int size)
+			throws RemoteException {
+		logger.entry(fullFilePath, pos, size);
+		return StorageServer.getInstance().randomReadFile(fullFilePath, pos, size);
+	}
+	@Override
 	public boolean deleteFile(String fullFilePath, boolean isOrigin) throws RemoteException {
 		logger.entry(fullFilePath, isOrigin);
 		return StorageServer.getInstance().deleteFile(fullFilePath, isOrigin);
@@ -57,5 +63,4 @@ public class StorageServiceImpl extends UnicastRemoteObject implements StorageSe
 		logger.entry(fullDirPath, isOrigin);
 		return StorageServer.getInstance().deleteDir(fullDirPath, isOrigin);
 	}
-	
 }

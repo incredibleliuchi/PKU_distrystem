@@ -20,6 +20,8 @@
       <appender-ref ref="Console"/>   
       <appender-ref ref="File"/>  
     </root>
+    <logger name="client.ClientRMIManager" level="debug" additivity="false">
+    </logger>
     <!--
     <logger name="user.User" level="debug" additivity="false">
     </logger> 
