@@ -4,6 +4,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.rmi.Naming;
 import java.rmi.registry.LocateRegistry;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -102,6 +103,7 @@ public class NamingServer implements Server {
 			fileUnit.deleteStorageMachine(invalidMachine);
 			if (fileUnit.getAllMachines().size() == 0) {
 				nowDir.deleteLowerFileUnit(fileUnit);
+				j--;
 			}
 		}
 
@@ -150,6 +152,11 @@ public class NamingServer implements Server {
 		});
 		timer.start();
 		return timer;
+	}
+	
+	//TODO
+	public void checkDupFileNum(FileUnit nowDir) {
+		
 	}
 	
 	
