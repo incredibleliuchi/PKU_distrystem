@@ -32,6 +32,9 @@ public class NamingServiceImpl extends UnicastRemoteObject implements NamingServ
 			if ( date < now ) storageValids.put(machine, now);
 		} else {
 			storageValids.put(machine, now);
+
+			NamingServer.getInstance().checkDupFileNumAndIncrease(NamingServer.getInstance().getRoot(), "");
+			
 		}
 	}
 
@@ -269,6 +272,7 @@ public class NamingServiceImpl extends UnicastRemoteObject implements NamingServ
 		logger.entry(machine, localRoot);
 		FileUnit root = NamingServer.getInstance().getRoot();
 		List<SynchroMeta> result = addToDir(machine, localRoot, root, "");
+		
 		return result;
 	}
 
@@ -425,7 +429,7 @@ public class NamingServiceImpl extends UnicastRemoteObject implements NamingServ
 			NamingServer namingServer = NamingServer.getInstance();
 			int storeIndex = fullDirPath.hashCode() % namingServer.storageValids.size();
 			storeIndex = (storeIndex + namingServer.storageValids.size()) % namingServer.storageValids.size();
-			int backNum = 2;
+			int backNum = 3;
 			if (namingServer.storageValids.size() < backNum) {
 				backNum = namingServer.storageValids.size() - 1;
 			}

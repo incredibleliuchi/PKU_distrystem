@@ -64,6 +64,15 @@ public class FileUnit implements Serializable {
 		storageMachines.add(machine);
 	}
 	
+	public boolean isStoredAtMachine(Machine machine) {
+		for (int i=0; i<storageMachines.size(); ++i) {
+			if (storageMachines.get(i).port == machine.port && storageMachines.get(i).ip.equals(machine.ip)) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
 	public int getStorageMachineNum() {
 		return storageMachines.size();
 	}

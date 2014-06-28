@@ -3,6 +3,7 @@ package server.naming;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.rmi.Naming;
+import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.util.ArrayList;
 import java.util.Date;
@@ -19,6 +20,7 @@ import org.apache.logging.log4j.Logger;
 
 import rmi.NamingService;
 import rmi.NamingServiceImpl;
+import rmi.StorageService;
 import server.Machine;
 import server.Server;
 import util.Variables;
@@ -40,6 +42,19 @@ public class NamingServer implements Server {
 	public final Map<Machine, Long> storageValids = new HashMap<>();
 	public final Machine me;
 	
+	private StorageService storageService;
+	
+	private boolean connectToStorageServer(Machine machine) {
+		try {
+			storageService = (StorageService) Naming.lookup(machine.getAddress(StorageService.class.getName()));
+			return true;
+		} catch (Exception e) {
+			logger.error(e);
+			e.printStackTrace();
+		}
+		return false;
+	}
+
 	/**
 	 * record the virtual user-view document tree structure
 	 * the root directory
@@ -154,9 +169,57 @@ public class NamingServer implements Server {
 		return timer;
 	}
 	
-	//TODO
-	public void checkDupFileNum(FileUnit nowDir) {
-		
+	public void checkDupFileNumAndIncrease(FileUnit nowDir, String nowPath) {
+		List<FileUnit> fileUnits = nowDir.list();
+		for (int j = 0; j < fileUnits.size(); j++) {
+			FileUnit fileUnit = fileUnits.get(j);
+			int dupTarget = 3;
+			if (storageValids.size() < 3) {
+				dupTarget = storageValids.size();
+			}
+			
+			if (fileUnit.getAllMachines().size() < dupTarget) {
+				Machine storedMachine = fileUnit.getAllMachines().get(0);
+				
+				String fullDirPath = nowPath + fileUnit.getName();
+				int storeIndex = fullDirPath.hashCode() % storageValids.size();
+				storeIndex = (storeIndex + storageValids.size()) % storageValids.size();
+				int backNum = dupTarget - fileUnit.getAllMachines().size();
+				while (backNum > 0) {
+					Machine machine = new ArrayList<>(storageValids.keySet()).get(storeIndex);
+					storeIndex = (storeIndex + 1) % storageValids.size();
+					if (!fileUnit.isStoredAtMachine(machine)) {
+						
+						connectToStorageServer(machine);
+						if (fileUnit.isDir()) {
+							try {
+								storageService.createDir(fullDirPath, false);
+							} catch (RemoteException e) {
+								e.printStackTrace();
+							}
+						} else {
+							try {
+								storageService.createFile(fullDirPath, false);
+								connectToStorageServer(storedMachine);
+								byte[] data = storageService.getFile(fullDirPath);
+								
+								connectToStorageServer(machine);
+								storageService.appendWriteFile(fullDirPath, data, false);
+								
+							} catch (RemoteException e) {
+								e.printStackTrace();
+							}
+						}
+						
+						backNum--;
+					}
+				}
+			}
+			if (fileUnit.isDir()) {
+				checkDupFileNumAndIncrease(fileUnit, nowPath + fileUnit.getName() + "/");
+			}
+		}
+
 	}
 	
 	
