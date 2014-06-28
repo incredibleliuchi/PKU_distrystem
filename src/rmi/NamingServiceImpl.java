@@ -394,14 +394,7 @@ public class NamingServiceImpl extends UnicastRemoteObject implements NamingServ
 				return null;
 			}
 
-			List<Machine> result = changedFileUnit.getAllMachines();
-			for (int i = 0; i < result.size(); i++) {
-				if (!fileUnits.get(i).isDir() && fileUnits.get(i).getName().equals(name)) {
-					result.remove(i);
-					break;
-				}
-			}
-			return result;
+			return changedFileUnit.getAllMachines();
 		}
 		return null;
 	}

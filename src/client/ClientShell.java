@@ -1,11 +1,13 @@
 package client;
 
 import java.io.RandomAccessFile;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.kohsuke.args4j.CmdLineParser;
 import org.kohsuke.args4j.Option;
 
+import server.Machine;
 import datastructure.FileUnit;
 
 
@@ -124,6 +126,10 @@ public class ClientShell {
 			final List<FileUnit> units = client.listDir(args4j.listPath);
 			for (FileUnit fileUnit : units) {
 				System.out.println(args4j.listPath + "/" + fileUnit);
+				List<Machine> machines = fileUnit.getAllMachines();
+				for (Machine machine : machines) {
+					System.out.println("\t"+machine.port);
+				}
 			}
 			
 		} else if ( args4j.existPath != null ) {
