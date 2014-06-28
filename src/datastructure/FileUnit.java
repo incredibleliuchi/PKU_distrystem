@@ -1,17 +1,23 @@
 package datastructure;
 
+import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.io.Serializable;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import server.Machine;
 
 /**
  * A file unit which can be a file or directory. 
  */
-public class FileUnit  implements Serializable {
+public class FileUnit implements Serializable {
+	private static final Logger logger = LogManager.getLogger(FileUnit.class);
 	private static final long serialVersionUID = 1L;
 	private final String name;
 	private final boolean isDir;
@@ -87,21 +93,20 @@ public class FileUnit  implements Serializable {
 		}
 	}
 	
-
-	public void listRecursively(OutputStream out) {
-		listRecursively(out, "");
-	}
-	
-	private void listRecursively(OutputStream out, String prefix) {
-		PrintWriter writer = new PrintWriter(out);
+	public void listRecursively(OutputStream out, String prefix) {
 		if (lowerFileUnits == null) return;
-		for (FileUnit unit : lowerFileUnits) {
-			writer.write(prefix + "/" + unit + " -- ");
-			for (Machine machine : unit.storageMachines) {
-				writer.write(machine + ";");
+		try {
+			for (FileUnit unit : lowerFileUnits) {
+				out.write((prefix + "/" + unit + " -- ").getBytes("utf8"));
+				for (Machine machine : unit.storageMachines) {
+					out.write((machine + ";").getBytes("utf8"));
+				}
+				out.write("\n".getBytes("utf8"));
+				if ( unit.isDir ) listRecursively(out, prefix + "/" + unit.name);
 			}
-			writer.write("\n");
-			if ( unit.isDir ) listRecursively(out, prefix + "/" + unit.name);
+		} catch (Exception e) {
+			logger.error(e);
+			e.printStackTrace();
 		}
 	}
 

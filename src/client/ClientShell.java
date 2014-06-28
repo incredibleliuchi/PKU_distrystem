@@ -124,6 +124,7 @@ public class ClientShell {
 			
 		} else if ( args4j.listPath != null ) {
 			final List<FileUnit> units = client.listDir(args4j.listPath);
+			if ( units == null ) throw new RuntimeException("command execution error");
 			for (FileUnit fileUnit : units) {
 				System.out.println(args4j.listPath + "/" + fileUnit);
 				List<Machine> machines = fileUnit.getAllMachines();
@@ -138,8 +139,14 @@ public class ClientShell {
 			
 		} else if ( args4j.log ) {
 			final List<FileUnit> units = client.listDir("");
+			if ( units == null ) throw new RuntimeException("command execution error");
 			for (FileUnit unit : units) {
-				unit.listRecursively(System.out);
+				System.out.write(("/" + unit + " -- ").getBytes("utf8"));
+				for (Machine machine : unit.getAllMachines()) {
+					System.out.write((machine + ";").getBytes("utf8"));
+				}
+				System.out.println();
+				unit.listRecursively(System.out, unit.getName());
 			}
 			
 		} else if ( args4j.quit ) {
