@@ -1,7 +1,6 @@
 package client;
 
 import java.io.RandomAccessFile;
-import java.util.ArrayList;
 import java.util.List;
 
 import org.kohsuke.args4j.CmdLineParser;
@@ -142,7 +141,7 @@ public class ClientShell {
 					System.out.write((machine + ";").getBytes("utf8"));
 				}
 				System.out.println();
-				unit.listRecursively(System.out, unit.getName());
+				unit.listRecursively(System.out, "/" + unit.getName());
 			}
 			
 		} else if ( args4j.quit ) {

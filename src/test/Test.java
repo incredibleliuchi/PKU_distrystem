@@ -3,10 +3,8 @@ package test;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
-import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.rmi.Naming;
-import java.util.Arrays;
 
 import javax.swing.Timer;
 
@@ -34,6 +32,7 @@ public class Test {
 		System.out.println(r);
 		System.out.println(new String(data, "utf8"));
 		System.out.println("finish");
+		rf.close();
 	}
 	
 	public static void testTimer() {
